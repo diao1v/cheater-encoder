@@ -1,10 +1,12 @@
+import { Paper } from '@mantine/core'
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen">
-      <h1 className="text-3xl">
-      Hello World
-      </h1>
-    </div>
+    <Paper shadow="xs" radius="xs" p="md">
+      <div className="flex flex-row justify-between items-center">
+        <h1 className="text-6xl font-bold">Hello World</h1>
+        <h1 className="font-bold text-green-500">123</h1>
+      </div>
+    </Paper>
   )
 }
