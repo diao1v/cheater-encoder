@@ -1,13 +1,16 @@
 import React from 'react'
-import { Button } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 
-type Props = {}
-
-const Nav = () => {
+const Nav: React.FC = () => {
   return (
-    <Button variant="outline" color="lime">
-      Login
-    </Button>
+    <Group position="right">
+      <Button variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>
+        Login
+      </Button>
+      <Button variant="outline" gradient={{ from: 'indigo', to: 'cyan' }}>
+        Logout
+      </Button>
+    </Group>
   )
 }
 

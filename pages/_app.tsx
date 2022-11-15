@@ -1,15 +1,20 @@
 import '../styles/globals.css'
+import '../styles/preflight.css'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { MantineProvider, AppShell } from '@mantine/core'
+import { NotificationsProvider } from '@mantine/notifications';
 import Footer from '../src/components/Footer/'
 import Header from '../src/components/Header/'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Head>
         <title>Chater Encoder</title>
         <meta
@@ -26,6 +31,7 @@ export default function App(props: AppProps) {
           colorScheme: 'light',
         }}
       >
+      <NotificationsProvider>
         <AppShell
           padding="md"
           header={<Header />}
@@ -34,15 +40,16 @@ export default function App(props: AppProps) {
               backgroundColor:
                 theme.colorScheme === 'dark'
                   ? theme.colors.dark[8]
-                  : theme.colors.gray[0],
+                  : theme.colors.gray[1],
             },
           })}
           fixed
           footer={<Footer />}
         >
           <Component {...pageProps} />
-        </AppShell>
+          </AppShell>
+        </NotificationsProvider>
       </MantineProvider>
-    </>
+    </QueryClientProvider>
   )
 }

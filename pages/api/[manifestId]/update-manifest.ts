@@ -1,0 +1,12 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
+import supabase from '../../../helper/superbase-client'
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== 'PATCH') {
+    return res.status(405).json({ message: 'Method not allowed' })
+  }
+  const { manifestId } = req.query
+  res.status(405).json({ message: 'Method not allowed' })
+}
+
+export default handler
