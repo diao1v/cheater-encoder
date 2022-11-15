@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import supabase from '../../../helper/superbase-client'
+import supabase from '../../../utils/superbase'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
