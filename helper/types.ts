@@ -19,7 +19,7 @@ export type manifestValuesType = {
   periodDuration: number
   vodPeriodStart: number
   segmentTimelineRepeat: number
-  liveStarted: boolean
+  playStarted: boolean
 }
 
 export type formValuesType = {

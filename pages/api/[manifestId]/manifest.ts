@@ -11,7 +11,6 @@ import { createManifestFile } from '../../../utils/manifest-creation'
 import { statSync, createReadStream } from 'fs'
 import { manifestValuesType } from '../../../helper/types'
 import { getCurrentTime, getUnixTime } from '../../../utils/time-conversion'
-import { calculateNewManifestValues } from '../../../utils/manifest-calculation'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
@@ -44,20 +43,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // if the player call this api the first time
   // the manifest available time will be set to the current time
+  // and set the playStarted to true
   const currentTime = getCurrentTime()
   if (
-    manifestValues.liveStarted === false &&
-    manifestValues.menifestType === 'dynamic'
+    manifestValues.playStarted === false
   ) {
-    const updatedManifestValues = {
-      ...manifestValues,
-      availabilityStartTime: currentTime,
-      liveStarted: true,
-    }
-    putManifestValuesToCache(manifestId as string, updatedManifestValues)
+    manifestValues.availabilityStartTime = currentTime
+    manifestValues.playStarted = true
+    putManifestValuesToCache(manifestId as string, manifestValues)
+
     const { error: putToSupabaseError } = await putManifestValuesToSupabase(
       manifestId as string,
-      updatedManifestValues
+      manifestValues
     )
     if (putToSupabaseError) {
       return res.status(404).json({ error: putToSupabaseError.message })

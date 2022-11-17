@@ -5,8 +5,8 @@ const defaultValues = {
   availabilityStartTime: '',
   liveDuration: 600,
   minimumUpdatePeriod: 16,
-  minBufferTime: 1.5,
-  timeShiftBufferDepth: 180,
+  minBufferTime: 2,
+  timeShiftBufferDepth: 60,
   suggestedPresentationDelay: 32,
   vodPeriodStart: 0,
   periodDuration: 600,
@@ -18,7 +18,7 @@ const defaultValues = {
   segmentDuration: 24576,
   mediaPresentationDuration: 180,
   segmentTimelineRepeat: 0,
-  liveStarted: false,
+  playStarted: false,
 }
 
 export const getDefaultValues = () => {
