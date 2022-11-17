@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { Paper, Stack } from '@mantine/core'
 import FormSection from './FormSection'
 import { useForm, UseFormReturnType } from '@mantine/form'
 import {
@@ -9,6 +8,11 @@ import {
   Group,
   Tooltip,
   SimpleGrid,
+  Switch,
+  Paper,
+  Stack,
+  Text,
+  Select,
 } from '@mantine/core'
 import { TimeInput } from '@mantine/dates'
 import { IconClock, IconInfoCircle } from '@tabler/icons'
@@ -198,13 +202,33 @@ const Form: React.FC<Props> = ({
               cols={3}
               breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
             >
-              <NumberInput
+              <Select
                 label={
                   <Tooltip
                     multiline
                     width={300}
                     position="top-start"
-                    label="This gives Period a different PTO after the Live to VoD conversion. The default value is always 0"
+                    label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
+                  >
+                    <Group spacing={2}>
+                      PTO change after L2VOD
+                      <IconInfoCircle size={17} />
+                    </Group>
+                  </Tooltip>
+                }
+                data={[
+                  { value: false, label: 'Keep the PTO' },
+                  { value: true, label: 'Change the PTO' },
+                ]}
+                {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
+              />
+              {/* <NumberInput
+                label={
+                  <Tooltip
+                    multiline
+                    width={300}
+                    position="top-start"
+                    label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
                   >
                     <Group spacing={2}>
                       PTO (If Live to Vod Diff)
@@ -213,7 +237,7 @@ const Form: React.FC<Props> = ({
                   </Tooltip>
                 }
                 {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
-              />
+              /> */}
 
               <NumberInput
                 label={

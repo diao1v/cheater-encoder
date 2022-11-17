@@ -12,7 +12,7 @@ const defaultValues = {
   periodDuration: 600,
   timescale: 12288,
   segmentPresentationTimeOffset: 0,
-  segmentPresentationTimeOffsetDiff: 0,
+  segmentPresentationTimeOffsetDiff: false,
   segmentStartNumber: 1,
   segmentStartTime: 0,
   segmentDuration: 24576,

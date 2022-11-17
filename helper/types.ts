@@ -10,7 +10,7 @@ export type manifestValuesType = {
   suggestedPresentationDelay: number
   timescale: number
   segmentPresentationTimeOffset: number
-  segmentPresentationTimeOffsetDiff: number
+  segmentPresentationTimeOffsetDiff: boolean
   segmentStartNumber: number
   segmentStartTime: number
   segmentDuration: number
@@ -34,7 +34,7 @@ export type formValuesType = {
   vodPeriodStart: number
   timescale: number
   segmentPresentationTimeOffset: number
-  segmentPresentationTimeOffsetDiff: number
+  segmentPresentationTimeOffsetDiff: boolean
   segmentStartNumber: number
   segmentStartTime: number
   segmentDuration: number

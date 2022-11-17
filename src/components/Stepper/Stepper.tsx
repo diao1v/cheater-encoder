@@ -13,7 +13,7 @@ import ManifestLinkDisplay from '../ManifestLinkDisplay'
 
 const Stepper: React.FC = () => {
   const [step, setStep] = useState(1)
-  const [manifestType, setManifestType] = useState('live')
+  const [manifestType, setManifestType] = useState('live-to-vod')
   const [manifestId, setManifestId] = React.useState('')
   const [formSubmited, setFormSubmited] = useState(false)
   useEffect(() => {
