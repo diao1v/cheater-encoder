@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       updatedManifestValues
     )
     if (putToSupabaseError) {
-      return res.status(500).json({ error: putToSupabaseError.message })
+      return res.status(404).json({ error: putToSupabaseError.message })
     }
   }
 

@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { manifestId } = req.query
 
 
-  // update the manifest as a whiole
+  // update the manifest as a whole
   if (req.method === 'PUT') {
     
   }
