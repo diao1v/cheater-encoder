@@ -7,34 +7,39 @@ import {
   NumberInput,
   Button,
   Group,
-  Box,
+  Tooltip,
   SimpleGrid,
 } from '@mantine/core'
 import { TimeInput } from '@mantine/dates'
-import { IconClock } from '@tabler/icons'
+import { IconClock, IconInfoCircle } from '@tabler/icons'
 import { v4 as uuidv4 } from 'uuid'
-import { defaultValues } from '../../../helper/default-values'
-import { formInitialValues } from '../../../helper/types'
-import { poster } from '../../../helper/http-request'
+import { getDefaultValues } from '../../../helper/default-values'
+import { formValuesType, manifestValuesType } from '../../../helper/types'
+import { poster, putor } from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
+import { getCurrentTime } from '../../../utils/time-conversion'
+import dayjs from 'dayjs'
 
 type Props = {
   manifestType: string
+  manifestId: string
+  submitRef: React.MutableRefObject<any>
+  formSubmited: boolean
+  setFormSubmited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Form: React.FC<Props> = ({ manifestType }) => {
-  const [manifestId, setManifestId] = React.useState(null)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setManifestId(uuidv4())
-    }
-  }, [])
-
+const Form: React.FC<Props> = ({
+  manifestType,
+  manifestId,
+  submitRef,
+  setFormSubmited,
+  formSubmited,
+}) => {
   const {
-    mutate: createInitialManifest,
-    error,
-    isLoading,
-    isSuccess,
+    mutate: saveManifestValuesToDatabase,
+    error: saveManifestValuesToDatabaseError,
+    isLoading: saveManifestValuesToDatabaseLoading,
+    isSuccess: saveManifestValuesToDatabaseSuccess,
   } = useMutation(poster, {
     onSuccess: (data) => {
       console.log(data)
@@ -44,32 +49,44 @@ const Form: React.FC<Props> = ({ manifestType }) => {
     },
   })
 
-  const formSubmissionHandler = (values: formInitialValues) => {
-    const formValues = {
+  const {
+    mutate: updateManifestValuesToDatabase,
+    error: updateManifestValuesToDatabaseError,
+    isLoading: updateManifestValuesToDatabaseLoading,
+    isSuccess: updateManifestValuesToDatabaseSuccess,
+  } = useMutation(putor, {
+    onSuccess: (data) => {
+      console.log(data)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const defaultManifestValues = getDefaultValues()
+
+  const formSubmissionHandler = (formValues: formValuesType) => {
+    const manifestValues: manifestValuesType = {
       manifestId,
       menifestType: manifestType === 'vod' ? 'static' : 'dynamic',
-      ...values,
-      availabilityStartTime: values.availabilityStartTime.toISOString(),
-      ...defaultValues,
+      ...defaultManifestValues,
+      ...formValues,
     }
-    createInitialManifest(formValues)
+    if (formSubmited === false) {
+      saveManifestValuesToDatabase(manifestValues)
+      setFormSubmited(true)
+      return
+    }
+    if (formSubmited === true) {
+      // update the stored manifest values
+      updateManifestValuesToDatabase(manifestValues)
+      return
+    }
   }
 
   const form = useForm({
     initialValues: {
-      baseURL: '',
-      availabilityStartTime: new Date(),
-      minimumUpdatePeriod: 16,
-      minBufferTime: 4.16,
-      timeShiftBufferDepth: 0,
-      suggestedPresentationDelay: 32,
-      periodStart: 0,
-      timescale: 12288,
-      segmentPresentationTimeOffset: 0,
-      segmentPresentationTimeOffsetDiff: null,
-      segmentStartNumber: 1,
-      segmentStartTime: 0,
-      segmentDuration: 24576,
+      ...defaultManifestValues,
     },
 
     validate: {},
@@ -90,19 +107,33 @@ const Form: React.FC<Props> = ({ manifestType }) => {
               cols={3}
               breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
             >
+              <TextInput
+                label={
+                  <Tooltip
+                    multiline
+                    width={300}
+                    position="top-start"
+                    label="The base name for the video segments. Eg, for a series file AAA_1_video_1.mp4 ... AAA_1_video_30.mp4, the base name is AAA_1_video"
+                  >
+                    <Group spacing={2}>
+                      File Base Name
+                      <IconInfoCircle size={14} />
+                    </Group>
+                  </Tooltip>
+                }
+                {...form.getInputProps('fileBaseName')}
+              />
               {manifestType !== 'vod' && (
-                <TimeInput
+                <NumberInput
                   withAsterisk
-                  icon={<IconClock size={16} />}
-                  label="Live start time"
-                  withSeconds
-                  {...form.getInputProps('availabilityStartTime')}
+                  label="Live Duration (sec)"
+                  {...form.getInputProps('liveDuration')}
                 />
               )}
               {manifestType !== 'vod' && (
                 <NumberInput
                   withAsterisk
-                  label="Update Period (sec)"
+                  label="Manifest Update Time (sec)"
                   {...form.getInputProps('minimumUpdatePeriod')}
                 />
               )}
@@ -126,11 +157,13 @@ const Form: React.FC<Props> = ({ manifestType }) => {
                   {...form.getInputProps('suggestedPresentationDelay')}
                 />
               )}
-              <NumberInput
-                withAsterisk
-                label="Period Start (sec)"
-                {...form.getInputProps('periodStart')}
-              />
+              {manifestType === 'vod' && (
+                <NumberInput
+                  withAsterisk
+                  label="Period Duration"
+                  {...form.getInputProps('periodDuration')}
+                />
+              )}
               <NumberInput
                 withAsterisk
                 label="Timescale"
@@ -148,7 +181,7 @@ const Form: React.FC<Props> = ({ manifestType }) => {
               />
               <NumberInput
                 withAsterisk
-                label="Segment Time (sec)"
+                label="First Segment Time (sec)"
                 {...form.getInputProps('segmentStartTime')}
               />
               <NumberInput
@@ -159,21 +192,52 @@ const Form: React.FC<Props> = ({ manifestType }) => {
             </SimpleGrid>
           </Stack>
         </FormSection>
-        {manifestType !== 'vod' && (
+        {manifestType === 'live-to-vod' && (
           <FormSection title={'Optional Section'}>
             <SimpleGrid
               cols={3}
               breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
             >
               <NumberInput
-                label="PTO (If Live to Vod Diff)"
+                label={
+                  <Tooltip
+                    multiline
+                    width={300}
+                    position="top-start"
+                    label="This gives Period a different PTO after the Live to VoD conversion. The default value is always 0"
+                  >
+                    <Group spacing={2}>
+                      PTO (If Live to Vod Diff)
+                      <IconInfoCircle size={17} />
+                    </Group>
+                  </Tooltip>
+                }
                 {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
+              />
+
+              <NumberInput
+                label={
+                  <Tooltip
+                    multiline
+                    width={300}
+                    position="top-start"
+                    label="This gives Period a start time after the Live to VoD conversion. The default of Period start time for Live and VoD is always 0"
+                  >
+                    <Group spacing={2}>
+                      VoD Period Start (sec)
+                      <IconInfoCircle size={17} />
+                    </Group>
+                  </Tooltip>
+                }
+                {...form.getInputProps('vodPeriodStart')}
               />
             </SimpleGrid>
           </FormSection>
         )}
         <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
+          <Button ref={submitRef} type="submit" style={{ display: 'none' }}>
+            Submit
+          </Button>
         </Group>
       </form>
     </Paper>

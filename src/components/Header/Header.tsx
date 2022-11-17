@@ -5,7 +5,7 @@ import React from 'react'
 
 type Props = {}
 
-const Header:React.FC = () => {
+const Header: React.FC = () => {
   return (
     <MantineHeader height={70} p="lg">
       <Group position="apart" spacing="xl">

@@ -1,35 +1,120 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import supabase from '../../../helper/superbase-client'
-import cache from 'memory-cache'
+import {
+  putManifestValuesToCache,
+  getManifestValuesFromCache,
+} from '../../../utils/cache'
+import {
+  getManifestValuesFromSupabase,
+  putManifestValuesToSupabase,
+} from '../../../utils/superbase'
+import { createManifestFile } from '../../../utils/manifest-creation'
+import { statSync, createReadStream } from 'fs'
+import { manifestValuesType } from '../../../helper/types'
+import { getCurrentTime, getUnixTime } from '../../../utils/time-conversion'
+import { calculateNewManifestValues } from '../../../utils/manifest-calculation'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
 
+  let manifestValues: manifestValuesType
+
   const { manifestId } = req.query
-  const cachedResponse = cache.get(manifestId)
 
-  if (cachedResponse) {
-    console.log('cache hit')
-    return res.status(200).json({ data: cachedResponse })
+  // get manifest values from cache or database
+  manifestValues = getManifestValuesFromCache(manifestId as string)
+
+  if (!manifestValues) {
+    const { data: manifests, error: fetchFromSupabaseError } =
+      await getManifestValuesFromSupabase(manifestId as string)
+
+    if (fetchFromSupabaseError) {
+      return res.status(500).json({ error: fetchFromSupabaseError.message })
+    }
+
+    if (manifests.length === 0) {
+      return res.status(404).json({ error: 'Manifest not found in database' })
+    }
+
+    manifestValues = manifests[0]
+
+    putManifestValuesToCache(manifestId as string, manifestValues)
   }
 
-  const { data: manifests, error } = await supabase
-    .from('manifests')
-    .select('*')
-    .eq('manifestId', manifestId)
-
-  if (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+  // if the player call this api the first time
+  // the manifest available time will be set to the current time
+  const currentTime = getCurrentTime()
+  if (
+    manifestValues.liveStarted === false &&
+    manifestValues.menifestType === 'dynamic'
+  ) {
+    const updatedManifestValues = {
+      ...manifestValues,
+      availabilityStartTime: currentTime,
+      liveStarted: true,
+    }
+    putManifestValuesToCache(manifestId as string, updatedManifestValues)
+    const { error: putToSupabaseError } = await putManifestValuesToSupabase(
+      manifestId as string,
+      updatedManifestValues
+    )
+    if (putToSupabaseError) {
+      return res.status(404).json({ error: putToSupabaseError.message })
+    }
   }
 
-  if (!manifests || manifests.length === 0) {
-    return res.status(404).json({ error: 'Manifest not found' })
+  // check whether the live is still available
+  const currentUnixTime = getUnixTime(currentTime)
+  const manifestAvailableTime = getUnixTime(
+    manifestValues.availabilityStartTime
+  )
+  if (currentUnixTime - manifestAvailableTime > manifestValues.liveDuration) {
+    return res.status(403).json({ error: 'The Live event has been ended' })
   }
-  
-  return res.status(200).json({ data: manifests })
+
+  // create the manifest file
+  const manifestPath = createManifestFile(manifestValues, currentTime)
+
+  if (!manifestPath) {
+    return res
+      .status(500)
+      .json({ error: 'Manifest file could not be created on server' })
+  }
+
+  // create buffer and return the manifest through the response
+  // ref: https://github.com/vercel/next.js/discussions/15453#discussioncomment-41926
+  try {
+    const manifestBuffer = createReadStream(manifestPath)
+    const stat = statSync(manifestPath)
+
+    await new Promise(function (resolve) {
+      res.writeHead(200, {
+        'Content-Type': 'application/dash+xml',
+        'Content-Length': stat.size,
+        'Content-disposition': 'attachment; filename=manifest.mpd',
+      })
+      manifestBuffer.pipe(res)
+      manifestBuffer.on('end', resolve)
+      manifestBuffer.on('error', function (err) {
+        if (err.name === 'ENOENT') {
+          res.status(400).json({
+            error: true,
+            message: 'Sorry we could not find the file you requested!',
+          })
+          res.end()
+        } else {
+          res
+            .status(500)
+            .json({ error: true, message: 'Sorry, something went wrong!' })
+          res.end()
+        }
+      })
+    })
+  } catch (err) {
+    res.status(400).json({ error: true, message: err })
+    res.end()
+  }
 }
 
 export default handler
