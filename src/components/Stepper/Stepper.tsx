@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   Stepper as MantineStepper,
   Button,
@@ -6,26 +6,43 @@ import {
   Box,
   Stack,
 } from '@mantine/core'
-import { VideoTypeSwitcher, Form } from '../Form'
+import { v4 as uuidv4 } from 'uuid'
+import Form from '../Form'
+import MinifestTypeSwitcher from '../ManifestTypeSwitcher'
+import ManifestLinkDisplay from '../ManifestLinkDisplay'
 
 const Stepper: React.FC = () => {
-  const [manifestType, setManifestType] = useState('live')
-  const [active, setActive] = useState(1)
-  const nextStep = () =>
-    setActive((current) => (current < 1 ? current + 1 : current))
+  const [step, setStep] = useState(2)
+  const [manifestType, setManifestType] = useState('vod')
+  const [manifestId, setManifestId] = React.useState('')
+  const [formSubmited, setFormSubmited] = useState(false)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !manifestId) {
+      setManifestId(uuidv4())
+    }
+  }, [manifestId])
+
+  const submitRef = useRef<HTMLInputElement>()
+
+  const nextStep = () => {
+    if (step === 1 && submitRef.current) {
+      submitRef.current.click()
+    }
+    setStep((current) => (current < 2 ? current + 1 : current))
+  }
   const prevStep = () =>
-    setActive((current) => (current > 0 ? current - 1 : current))
+    setStep((current) => (current > 0 ? current - 1 : current))
 
   return (
     <Box sx={{ width: '90%', height: '100%', margin: 'auto', marginY: '2rem' }}>
       <Stack justify="space-between" sx={{ height: '100%' }}>
-        <MantineStepper active={active} onStepClick={setActive} breakpoint="sm">
+        <MantineStepper active={step} onStepClick={setStep} breakpoint="sm">
           <MantineStepper.Step
             label="Choose Type"
             description="Type of manifest"
           >
             <Group position="center" sx={{ height: '400px' }}>
-              <VideoTypeSwitcher
+              <MinifestTypeSwitcher
                 manifestType={manifestType}
                 setManifestType={setManifestType}
               />
@@ -36,16 +53,33 @@ const Stepper: React.FC = () => {
             description="Get manifest link"
           >
             <Group position="center">
-              <Form manifestType={manifestType} />
+              <Form
+                manifestType={manifestType}
+                manifestId={manifestId}
+                submitRef={submitRef}
+                formSubmited={formSubmited}
+                setFormSubmited={setFormSubmited}
+              />
+            </Group>
+          </MantineStepper.Step>
+          <MantineStepper.Step
+            label="Generate Manifest"
+            description="Get manifest link"
+          >
+            <Group position="center">
+              <ManifestLinkDisplay
+                manifestId={manifestId}
+                manifestType={manifestType}
+              />
             </Group>
           </MantineStepper.Step>
         </MantineStepper>
 
         <Group position="center" mt="xl">
-          <Button variant="default" onClick={prevStep} disabled={active === 0}>
+          <Button variant="default" onClick={prevStep} disabled={step === 0}>
             Back
           </Button>
-          <Button onClick={nextStep} disabled={active === 1 && !manifestType}>
+          <Button onClick={nextStep} disabled={step === 2 || !manifestType}>
             Next step
           </Button>
         </Group>

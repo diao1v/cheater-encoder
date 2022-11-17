@@ -1,34 +1,40 @@
-export type manifestValues = {
+export type manifestValuesType = {
   manifestId: string
   baseURL: string
-  availabilityStartTime: Date
+  fileBaseName: string
+  availabilityStartTime: string
+  liveDuration: number
   minimumUpdatePeriod: number
   minBufferTime: number
   timeShiftBufferDepth: number
   suggestedPresentationDelay: number
   timescale: number
   segmentPresentationTimeOffset: number
-  segmentPresentationTimeOffsetDiff: null | number
+  segmentPresentationTimeOffsetDiff: number
   segmentStartNumber: number
   segmentStartTime: number
   segmentDuration: number
   menifestType: 'static' | 'dynamic'
-  mediaPresentationDuration: null | number
-  periodDuration: null | number
+  mediaPresentationDuration: number // DVR window for the Live event
+  periodDuration: number
+  vodPeriodStart: number
   segmentTimelineRepeat: number
-  publishTime: null | Date
+  liveStarted: boolean
 }
 
-export type formInitialValues = {
+export type formValuesType = {
   baseURL: string
-  availabilityStartTime: Date
+  fileBaseName: string
+  liveDuration: number
   minimumUpdatePeriod: number
   minBufferTime: number
   timeShiftBufferDepth: number
   suggestedPresentationDelay: number
+  periodDuration: number
+  vodPeriodStart: number
   timescale: number
   segmentPresentationTimeOffset: number
-  segmentPresentationTimeOffsetDiff: null | number
+  segmentPresentationTimeOffsetDiff: number
   segmentStartNumber: number
   segmentStartTime: number
   segmentDuration: number

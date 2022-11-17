@@ -1,15 +1,13 @@
 import React from 'react'
-import { Text, Group } from '@mantine/core'
-import { IconBrandAppleArcade } from '@tabler/icons'
+import { Box } from '@mantine/core'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const Logo: React.FC = () => {
   return (
-    <Group spacing={0}>
-      <IconBrandAppleArcade size={30} />
-      <Text size="xl" weight="bold" ml={4}>
-        Cheater Encoder
-      </Text>
-    </Group>
+    <Link href="/">
+      <Image src="/assets/images/logo.png" alt="logo" width="300" height="64" />
+    </Link>
   )
 }
 

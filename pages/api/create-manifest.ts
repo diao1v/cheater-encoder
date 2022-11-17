@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import supabase from '../../utils/superbase'
-import cache from 'memory-cache'
-import { CACHE_TIME } from '../../helper/constants'
+import { addManifestValuesToSupabse } from '../../utils/superbase'
+import { putManifestValuesToCache } from '../../utils/cache'
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,16 +9,18 @@ export default async function handler(
 ) {
   const manifestBody = req.body
 
-  let { data, error } = await supabase
-    .from('manifests')
-    .insert([manifestBody])
-    .select('*') // this is needed to return the inserted row
+  let { data, error } = await addManifestValuesToSupabse(manifestBody)
 
   if (error) {
     console.log(error)
-    res.status(500).json({ error: error.message })
-  } else {
-    cache.put(manifestBody.manifestId, data, CACHE_TIME)
-    res.status(201).json({ manifestId: manifestBody.manifestId })
+    return res.status(500).json({ error: error.message })
   }
+  if (data?.length === 0) {
+    return res
+      .status(204)
+      .json({ message: 'Manifest saved to database; No return data' })
+  }
+
+  putManifestValuesToCache(manifestBody.manifestId, manifestBody)
+  res.status(201).json({ manifestId: manifestBody.manifestId })
 }

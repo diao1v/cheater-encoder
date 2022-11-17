@@ -1,8 +1,14 @@
-import { manifestValues } from './types'
+import { manifestValuesType } from '../helper/types'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
+import { convertSecToTimespan } from '../utils/time-conversion'
 import path from 'path'
+import { putManifestValuesToCache } from './cache'
+import { calculateNewManifestValues } from './manifest-calculation'
 
-const createLiveManifestContent = (manifestValues: manifestValues): string => {
+const createLiveManifestContent = (
+  manifestValues: manifestValuesType,
+  currentTime: string
+): string => {
   const {
     baseURL,
     availabilityStartTime,
@@ -20,7 +26,6 @@ const createLiveManifestContent = (manifestValues: manifestValues): string => {
     mediaPresentationDuration,
     periodDuration,
     segmentTimelineRepeat,
-    publishTime,
   } = manifestValues
 
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>
@@ -51,14 +56,15 @@ const createLiveManifestContent = (manifestValues: manifestValues): string => {
   return manifest
 }
 
-const createVodManifestContent = (manifestValues: manifestValues): string => {
+const createVodManifestContent = (
+  manifestValues: manifestValuesType,
+  currentTime: string
+): string => {
   const {
+    manifestId,
     baseURL,
-    availabilityStartTime,
-    minimumUpdatePeriod,
     minBufferTime,
-    timeShiftBufferDepth,
-    suggestedPresentationDelay,
+    fileBaseName,
     timescale,
     segmentPresentationTimeOffset,
     segmentPresentationTimeOffsetDiff,
@@ -66,27 +72,67 @@ const createVodManifestContent = (manifestValues: manifestValues): string => {
     segmentStartTime,
     segmentDuration,
     menifestType,
-    mediaPresentationDuration,
     periodDuration,
-    segmentTimelineRepeat,
-    publishTime,
+    vodPeriodStart,
   } = manifestValues
 
-  const manifest = ``
+  const perdiodDurationToFormate = convertSecToTimespan(periodDuration)
+  const miniBufferTimeToFormate = convertSecToTimespan(minBufferTime)
+  const vodPeriodStartToFormate = convertSecToTimespan(vodPeriodStart)
+  const adjustedSegmentPresentationTimeOffset =
+    segmentPresentationTimeOffset - segmentPresentationTimeOffsetDiff
+  const segmentTimelineRepeat =
+    Math.floor(periodDuration / (segmentDuration / timescale)) - 1
+
+  const manifest = `<?xml version="1.0" encoding="UTF-8"?>
+  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" minBufferTime="PT${miniBufferTimeToFormate}" type="${menifestType}" mediaPresentationDuration="PT${perdiodDurationToFormate}" publishTime="${currentTime}" >
+     <BaseURL>${baseURL}</BaseURL>
+    <Period id="1" start="PT${vodPeriodStartToFormate}" duration="PT${perdiodDurationToFormate}" bitstreamSwitching="true">
+      <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
+         <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
+          <SegmentTemplate timescale="${timescale}" presentationTimeOffset="${adjustedSegmentPresentationTimeOffset}" startNumber="${segmentStartNumber}" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
+            <SegmentTimeline>
+              <S t="${segmentStartTime}" d="${segmentDuration}" r="${segmentTimelineRepeat}"></S>
+            </SegmentTimeline>
+          </SegmentTemplate>
+        </Representation>
+      </AdaptationSet>
+    </Period>
+  </MPD>`
 
   return manifest
 }
 
 export const createManifestFile = (
-  manifestValues: manifestValues
+  manifestValues: manifestValuesType,
+  currentTime: string
 ): string | null => {
-  // update the manifest base on time
+  // calculate the manifest values base on the time passed
+  let calculatedManifestValues: manifestValuesType
 
+  if (
+    // if the manifest is a VoD or the first time the Live manifest is created
+    // no need the further calculate the manifest values
+    // use the initial manifest values
+    manifestValues.menifestType === 'static' ||
+    currentTime === manifestValues.availabilityStartTime
+  ) {
+    calculatedManifestValues = manifestValues
+  } else {
+    calculatedManifestValues = calculateNewManifestValues(
+      manifestValues,
+      currentTime
+    )
+    putManifestValuesToCache(
+      manifestValues.manifestId as string,
+      calculatedManifestValues
+    )
+  }
   // create manifest content
   const manifestContent =
     manifestValues.menifestType === 'static'
-      ? createVodManifestContent(manifestValues)
-      : createLiveManifestContent(manifestValues)
+      ? createVodManifestContent(manifestValues, currentTime)
+      : createLiveManifestContent(manifestValues, currentTime)
 
   const dir = path.join(process.cwd(), 'tmp', manifestValues.manifestId)
   let filePath = null
