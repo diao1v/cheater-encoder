@@ -12,7 +12,7 @@ import MinifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
 
 const Stepper: React.FC = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [manifestType, setManifestType] = useState('live-to-vod')
   const [manifestId, setManifestId] = React.useState('')
   const [formSubmited, setFormSubmited] = useState(false)

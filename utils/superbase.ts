@@ -40,6 +40,12 @@ export const patchManifestValueToSupabase = async (
     .eq('manifestId', manifestId)
 }
 
+export const countManifestsInSupabase = async () => {
+  return await supabase
+    .from('manifests')
+    .select('manifestId', { count: 'exact' })
+}
+
 type ManifestsResponse = Awaited<
   ReturnType<typeof getManifestValuesFromSupabase>
 >

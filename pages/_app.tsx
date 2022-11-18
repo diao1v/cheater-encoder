@@ -3,7 +3,7 @@ import '../styles/preflight.css'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { MantineProvider, AppShell } from '@mantine/core'
-import { NotificationsProvider } from '@mantine/notifications';
+import { NotificationsProvider } from '@mantine/notifications'
 import Footer from '../src/components/Footer/'
 import Header from '../src/components/Header/'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -31,22 +31,22 @@ export default function App(props: AppProps) {
           colorScheme: 'light',
         }}
       >
-      <NotificationsProvider>
-        <AppShell
-          padding="md"
-          header={<Header />}
-          styles={(theme) => ({
-            main: {
-              backgroundColor:
-                theme.colorScheme === 'dark'
-                  ? theme.colors.dark[8]
-                  : theme.colors.gray[1],
-            },
-          })}
-          fixed
-          footer={<Footer />}
-        >
-          <Component {...pageProps} />
+        <NotificationsProvider>
+          <AppShell
+            padding="md"
+            header={<Header />}
+            styles={(theme) => ({
+              main: {
+                backgroundColor:
+                  theme.colorScheme === 'dark'
+                    ? theme.colors.dark[8]
+                    : theme.colors.gray[1],
+              },
+            })}
+            fixed
+            footer={<Footer manifestsCount={pageProps.manifestsCount} />}
+          >
+            <Component {...pageProps} />
           </AppShell>
         </NotificationsProvider>
       </MantineProvider>
