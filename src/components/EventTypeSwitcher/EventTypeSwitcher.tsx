@@ -2,15 +2,15 @@ import React from 'react'
 import { SegmentedControl } from '@mantine/core'
 
 type Props = {
-  manifestType: string
-  setManifestType: (value: string) => void
+  eventType: 'live' | 'vod' | 'live-to-vod'
+  setEventType: (value: 'live' | 'vod' | 'live-to-vod') => void
 }
 
-const TypeSwitcher: React.FC<Props> = ({ manifestType, setManifestType }) => {
+const EventTypeSwitcher: React.FC<Props> = ({ eventType, setEventType }) => {
   return (
     <SegmentedControl
-      value={manifestType}
-      onChange={setManifestType}
+      value={eventType}
+      onChange={setEventType}
       color="orange"
       my={100}
       size="lg"
@@ -23,4 +23,4 @@ const TypeSwitcher: React.FC<Props> = ({ manifestType, setManifestType }) => {
   )
 }
 
-export default TypeSwitcher
+export default EventTypeSwitcher

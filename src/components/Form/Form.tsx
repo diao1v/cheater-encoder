@@ -14,18 +14,14 @@ import {
   Text,
   Select,
 } from '@mantine/core'
-import { TimeInput } from '@mantine/dates'
-import { IconClock, IconInfoCircle } from '@tabler/icons'
-import { v4 as uuidv4 } from 'uuid'
+import { IconInfoCircle } from '@tabler/icons'
 import { getDefaultValues } from '../../../helper/default-values'
 import { formValuesType, manifestValuesType } from '../../../helper/types'
 import { poster, putor } from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
-import { getCurrentTime } from '../../../utils/time-conversion'
-import dayjs from 'dayjs'
 
 type Props = {
-  manifestType: string
+  eventType: 'live' | 'vod' | 'live-to-vod'
   manifestId: string
   submitRef: React.MutableRefObject<any>
   formSubmited: boolean
@@ -33,7 +29,7 @@ type Props = {
 }
 
 const Form: React.FC<Props> = ({
-  manifestType,
+  eventType,
   manifestId,
   submitRef,
   setFormSubmited,
@@ -72,7 +68,8 @@ const Form: React.FC<Props> = ({
   const formSubmissionHandler = (formValues: formValuesType) => {
     const manifestValues: manifestValuesType = {
       manifestId,
-      menifestType: manifestType === 'vod' ? 'static' : 'dynamic',
+      eventType,
+      manifestType: eventType === 'vod' ? 'static' : 'dynamic',
       ...defaultManifestValues,
       ...formValues,
     }
@@ -127,14 +124,14 @@ const Form: React.FC<Props> = ({
                 }
                 {...form.getInputProps('fileBaseName')}
               />
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Live Duration (sec)"
                   {...form.getInputProps('liveDuration')}
                 />
               )}
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Manifest Update Time (sec)"
@@ -147,21 +144,21 @@ const Form: React.FC<Props> = ({
                 label="Buffer Time (sec)"
                 {...form.getInputProps('minBufferTime')}
               />
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="DVR Window (sec)"
                   {...form.getInputProps('timeShiftBufferDepth')}
                 />
               )}
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Presentation Delay (sec)"
                   {...form.getInputProps('suggestedPresentationDelay')}
                 />
               )}
-              {manifestType === 'vod' && (
+              {eventType === 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Period Duration"
@@ -196,7 +193,7 @@ const Form: React.FC<Props> = ({
             </SimpleGrid>
           </Stack>
         </FormSection>
-        {manifestType === 'live-to-vod' && (
+        {eventType === 'live-to-vod' && (
           <FormSection title={'Optional Section'}>
             <SimpleGrid
               cols={3}

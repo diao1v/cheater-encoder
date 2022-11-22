@@ -19,6 +19,7 @@ const defaultValues = {
   mediaPresentationDuration: 180,
   segmentTimelineRepeat: 0,
   playStarted: false,
+  liveToVod: false,
 }
 
 export const getDefaultValues = () => {

@@ -9,3 +9,13 @@ export const putor = (manifestBody: manifestValuesType) => {
   const manifestId = manifestBody.manifestId
   return axios.put(`api/${manifestId}/update-manifest`, manifestBody)
 }
+
+export const liveToVodPatcher = ({
+  manifestId,
+  liveToVod,
+}: {
+  manifestId: string
+  liveToVod: boolean
+}) => {
+  return axios.patch(`api/${manifestId}/update-manifest`, { liveToVod })
+}

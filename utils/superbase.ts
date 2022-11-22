@@ -31,12 +31,12 @@ export const putManifestValuesToSupabase = async (
 
 export const patchManifestValueToSupabase = async (
   manifestId: string,
-  coloumName: string,
+  coloum: string,
   updatedValue: any
 ) => {
   return await supabase
     .from('manifests')
-    .update({ coloumName: updatedValue })
+    .update({ [coloum]: updatedValue })
     .eq('manifestId', manifestId)
 }
 

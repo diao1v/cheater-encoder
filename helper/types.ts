@@ -14,12 +14,14 @@ export type manifestValuesType = {
   segmentStartNumber: number
   segmentStartTime: number
   segmentDuration: number
-  menifestType: 'static' | 'dynamic'
+  manifestType: 'static' | 'dynamic'
+  eventType: 'vod' | 'live' | 'live-to-vod'
   mediaPresentationDuration: number // DVR window for the Live event
   periodDuration: number
   vodPeriodStart: number
   segmentTimelineRepeat: number
   playStarted: boolean
+  liveToVod: boolean
 }
 
 export type formValuesType = {
