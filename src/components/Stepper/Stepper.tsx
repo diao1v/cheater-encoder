@@ -8,12 +8,14 @@ import {
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
 import Form from '../Form'
-import MinifestTypeSwitcher from '../ManifestTypeSwitcher'
+import EventTypeSwitcher from '../EventTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
 
 const Stepper: React.FC = () => {
   const [step, setStep] = useState(1)
-  const [manifestType, setManifestType] = useState('live')
+  const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
+    'live-to-vod'
+  )
   const [manifestId, setManifestId] = React.useState('')
   const [formSubmited, setFormSubmited] = useState(false)
   useEffect(() => {
@@ -37,24 +39,21 @@ const Stepper: React.FC = () => {
     <Box sx={{ width: '90%', height: '100%', margin: 'auto', marginY: '2rem' }}>
       <Stack justify="space-between" sx={{ height: '100%' }}>
         <MantineStepper active={step} onStepClick={setStep} breakpoint="sm">
-          <MantineStepper.Step
-            label="Choose Type"
-            description="Type of manifest"
-          >
+          <MantineStepper.Step label="Choose Type" description="Type of event">
             <Group position="center" sx={{ height: '400px' }}>
-              <MinifestTypeSwitcher
-                manifestType={manifestType}
-                setManifestType={setManifestType}
+              <EventTypeSwitcher
+                eventType={eventType}
+                setEventType={setEventType}
               />
             </Group>
           </MantineStepper.Step>
           <MantineStepper.Step
             label="Generate Manifest"
-            description="Get manifest link"
+            description="Input manifest parameters"
           >
             <Group position="center">
               <Form
-                manifestType={manifestType}
+                eventType={eventType}
                 manifestId={manifestId}
                 submitRef={submitRef}
                 formSubmited={formSubmited}
@@ -69,7 +68,7 @@ const Stepper: React.FC = () => {
             <Group position="center">
               <ManifestLinkDisplay
                 manifestId={manifestId}
-                manifestType={manifestType}
+                eventType={eventType}
               />
             </Group>
           </MantineStepper.Step>
@@ -79,7 +78,7 @@ const Stepper: React.FC = () => {
           <Button variant="default" onClick={prevStep} disabled={step === 0}>
             Back
           </Button>
-          <Button onClick={nextStep} disabled={step === 2 || !manifestType}>
+          <Button onClick={nextStep} disabled={step === 2 || !eventType}>
             Next step
           </Button>
         </Group>

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { Paper, Stack } from '@mantine/core'
 import FormSection from './FormSection'
 import { useForm, UseFormReturnType } from '@mantine/form'
 import {
@@ -9,19 +8,20 @@ import {
   Group,
   Tooltip,
   SimpleGrid,
+  Switch,
+  Paper,
+  Stack,
+  Text,
+  Select,
 } from '@mantine/core'
-import { TimeInput } from '@mantine/dates'
-import { IconClock, IconInfoCircle } from '@tabler/icons'
-import { v4 as uuidv4 } from 'uuid'
+import { IconInfoCircle } from '@tabler/icons'
 import { getDefaultValues } from '../../../helper/default-values'
 import { formValuesType, manifestValuesType } from '../../../helper/types'
 import { poster, putor } from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
-import { getCurrentTime } from '../../../utils/time-conversion'
-import dayjs from 'dayjs'
 
 type Props = {
-  manifestType: string
+  eventType: 'live' | 'vod' | 'live-to-vod'
   manifestId: string
   submitRef: React.MutableRefObject<any>
   formSubmited: boolean
@@ -29,7 +29,7 @@ type Props = {
 }
 
 const Form: React.FC<Props> = ({
-  manifestType,
+  eventType,
   manifestId,
   submitRef,
   setFormSubmited,
@@ -68,7 +68,8 @@ const Form: React.FC<Props> = ({
   const formSubmissionHandler = (formValues: formValuesType) => {
     const manifestValues: manifestValuesType = {
       manifestId,
-      menifestType: manifestType === 'vod' ? 'static' : 'dynamic',
+      eventType,
+      manifestType: eventType === 'vod' ? 'static' : 'dynamic',
       ...defaultManifestValues,
       ...formValues,
     }
@@ -123,14 +124,14 @@ const Form: React.FC<Props> = ({
                 }
                 {...form.getInputProps('fileBaseName')}
               />
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Live Duration (sec)"
                   {...form.getInputProps('liveDuration')}
                 />
               )}
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Manifest Update Time (sec)"
@@ -143,21 +144,21 @@ const Form: React.FC<Props> = ({
                 label="Buffer Time (sec)"
                 {...form.getInputProps('minBufferTime')}
               />
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="DVR Window (sec)"
                   {...form.getInputProps('timeShiftBufferDepth')}
                 />
               )}
-              {manifestType !== 'vod' && (
+              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Presentation Delay (sec)"
                   {...form.getInputProps('suggestedPresentationDelay')}
                 />
               )}
-              {manifestType === 'vod' && (
+              {eventType === 'vod' && (
                 <NumberInput
                   withAsterisk
                   label="Period Duration"
@@ -192,19 +193,39 @@ const Form: React.FC<Props> = ({
             </SimpleGrid>
           </Stack>
         </FormSection>
-        {manifestType === 'live-to-vod' && (
+        {eventType === 'live-to-vod' && (
           <FormSection title={'Optional Section'}>
             <SimpleGrid
               cols={3}
               breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
             >
-              <NumberInput
+              <Select
                 label={
                   <Tooltip
                     multiline
                     width={300}
                     position="top-start"
-                    label="This gives Period a different PTO after the Live to VoD conversion. The default value is always 0"
+                    label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
+                  >
+                    <Group spacing={2}>
+                      PTO change after L2VOD
+                      <IconInfoCircle size={17} />
+                    </Group>
+                  </Tooltip>
+                }
+                data={[
+                  { value: false, label: 'Keep the PTO' },
+                  { value: true, label: 'Change the PTO' },
+                ]}
+                {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
+              />
+              {/* <NumberInput
+                label={
+                  <Tooltip
+                    multiline
+                    width={300}
+                    position="top-start"
+                    label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
                   >
                     <Group spacing={2}>
                       PTO (If Live to Vod Diff)
@@ -213,7 +234,7 @@ const Form: React.FC<Props> = ({
                   </Tooltip>
                 }
                 {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
-              />
+              /> */}
 
               <NumberInput
                 label={

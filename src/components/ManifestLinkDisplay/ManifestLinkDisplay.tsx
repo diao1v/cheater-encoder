@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import {
   Paper,
   Stack,
@@ -9,27 +9,56 @@ import {
   Input,
   Switch,
 } from '@mantine/core'
-import { IconLink, IconPlane, IconPlaneOff } from '@tabler/icons'
+import { IconLink, IconAccessPoint, IconAccessPointOff, IconLoader } from '@tabler/icons'
+import { liveToVodPatcher } from '../../../utils/http-request'
+import { useMutation } from '@tanstack/react-query'
 
 type Props = {
   manifestId: string
-  manifestType: string
+  eventType: 'live' | 'vod' | 'live-to-vod'
 }
 
-const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, manifestType }) => {
+const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, eventType }) => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   const [checked, setChecked] = useState(true)
 
   const manifestUrl = `${siteUrl}/api/${manifestId}/manifest`
 
+  const {
+    mutate: updateManifestPartialValueToDatabase,
+    error,
+    isLoading,
+    isSuccess,
+  } = useMutation(liveToVodPatcher, {
+    onSuccess: (data) => {
+      console.log(data)
+      setChecked(false)
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   const switcherChangeHandler = (event: any) => {
     if (checked === false) {
       return
     }
-    setChecked(event.target.checked)
 
-    // TO-DO
     // update the manifest type in the cache and database
+    updateManifestPartialValueToDatabase({
+      manifestId: manifestId,
+      liveToVod: true,
+    })
+  }
+
+  const switcherIcon = (): ReactNode => {
+    if (isLoading && checked) {
+      return <IconLoader size={20} color="lightgrey" stroke={3} />
+    }
+    if (checked) {
+      return <IconAccessPoint size={20} color="teal" stroke={3} />
+    }
+    return <IconAccessPointOff size={20} color="orange" stroke={3} />
   }
 
   return (
@@ -66,7 +95,7 @@ const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, manifestType }) => {
           Note: For Live event, the start time will be the time when player
           first request this manifest
         </Text>
-        {manifestType === 'live-to-vod' && (
+        {eventType === 'live-to-vod' && (
           <>
             <Text
               variant="gradient"
@@ -89,13 +118,7 @@ const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, manifestType }) => {
               onLabel="ENCODER ON"
               offLabel="ENCODER OFF"
               onChange={switcherChangeHandler}
-              thumbIcon={
-                checked ? (
-                  <IconPlane size={12} color="teal" stroke={3} />
-                ) : (
-                  <IconPlaneOff size={12} color="orange" stroke={3} />
-                )
-              }
+              thumbIcon={switcherIcon()}
             />
           </>
         )}

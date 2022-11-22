@@ -20,11 +20,10 @@ const createLiveManifestContent = (
     suggestedPresentationDelay,
     timescale,
     segmentPresentationTimeOffset,
-    segmentPresentationTimeOffsetDiff,
     segmentStartNumber,
     segmentStartTime,
     segmentDuration,
-    menifestType,
+    manifestType: menifestType,
     segmentTimelineRepeat,
   } = manifestValues
 
@@ -35,8 +34,6 @@ const createLiveManifestContent = (
     suggestedPresentationDelay
   )
   const minimumUpdatePeriodToFormate = convertSecToTimespan(minimumUpdatePeriod)
-  const adjustedSegmentPresentationTimeOffset =
-    segmentPresentationTimeOffset - segmentPresentationTimeOffsetDiff
 
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>
   <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" type="${menifestType}" availabilityStartTime="${availabilityStartTime}" publishTime="${currentTime}" minimumUpdatePeriod="PT${minimumUpdatePeriodToFormate}" minBufferTime="PT${miniBufferTimeToFormate}" timeShiftBufferDepth="PT${timeShiftBufferDepthToFormate}" suggestedPresentationDelay="PT${suggestedPresentationDelayToFormate}">
@@ -44,7 +41,7 @@ const createLiveManifestContent = (
     <Period id="1" start="PT0S" bitstreamSwitching="true">
       <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
          <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
-          <SegmentTemplate timescale="${timescale}" presentationTimeOffset="${adjustedSegmentPresentationTimeOffset}" startNumber="${segmentStartNumber}" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
+          <SegmentTemplate timescale="${timescale}" presentationTimeOffset="${segmentPresentationTimeOffset}" startNumber="${segmentStartNumber}" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
             <SegmentTimeline>
               <S t="${segmentStartTime}" d="${segmentDuration}" r="${segmentTimelineRepeat}"></S>
             </SegmentTimeline>
@@ -73,7 +70,7 @@ const createVodManifestContent = (
     segmentStartTime,
     segmentDuration,
     segmentTimelineRepeat,
-    menifestType,
+    manifestType: menifestType,
     periodDuration,
     vodPeriodStart,
   } = manifestValues
@@ -81,8 +78,11 @@ const createVodManifestContent = (
   const perdiodDurationToFormate = convertSecToTimespan(periodDuration)
   const miniBufferTimeToFormate = convertSecToTimespan(minBufferTime)
   const vodPeriodStartToFormate = convertSecToTimespan(vodPeriodStart)
+
   const adjustedSegmentPresentationTimeOffset =
-    segmentPresentationTimeOffset - segmentPresentationTimeOffsetDiff
+    segmentPresentationTimeOffsetDiff
+      ? segmentStartTime
+      : segmentPresentationTimeOffset
 
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>
   <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" minBufferTime="PT${miniBufferTimeToFormate}" type="${menifestType}" mediaPresentationDuration="PT${perdiodDurationToFormate}" publishTime="${currentTime}" >
@@ -119,7 +119,7 @@ export const createManifestFile = (
 
   // create manifest content
   const manifestContent =
-    manifestValues.menifestType === 'static'
+    calculatedManifestValues.manifestType === 'static'
       ? createVodManifestContent(calculatedManifestValues, currentTime)
       : createLiveManifestContent(calculatedManifestValues, currentTime)
 

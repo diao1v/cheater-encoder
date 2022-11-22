@@ -13,9 +13,9 @@ export const calculateNewManifestValues = (
   let calculatedManifestValues: manifestValuesType = {
     ...manifestValues,
   }
-  // calculate the new values for VoD
+  // calculate the values for VoD
   if (
-    manifestValues.menifestType === 'static' &&
+    manifestValues.eventType === 'vod' &&
     manifestValues.segmentTimelineRepeat === 0
   ) {
     calculatedManifestValues.segmentTimelineRepeat =
@@ -29,16 +29,17 @@ export const calculateNewManifestValues = (
   const liveStartTimeUnix = getUnixTime(manifestValues.availabilityStartTime)
   const currentLiveLength = currentTimeUnix - liveStartTimeUnix
 
-  // calculate the new values for Live when Live just started
-  if (manifestValues.menifestType === 'dynamic' && currentLiveLength === 0) {
+  // return the raw values if the Live event just started
+  if (manifestValues.eventType !== 'vod' && currentLiveLength === 0) {
   }
 
   // calculate the new values for Live
   // before Live start move out of DVR window
   // S@r changed
   if (
-    manifestValues.menifestType === 'dynamic' &&
-    currentLiveLength < manifestValues.timeShiftBufferDepth
+    manifestValues.eventType !== 'vod' &&
+    currentLiveLength < manifestValues.timeShiftBufferDepth &&
+    manifestValues.liveToVod === false
   ) {
     const updatedSegmentTimelineRepeat =
       Math.floor(
@@ -54,8 +55,9 @@ export const calculateNewManifestValues = (
   // startNumber and S@t changed
   // S@r changed
   if (
-    manifestValues.menifestType === 'dynamic' &&
-    currentLiveLength >= manifestValues.timeShiftBufferDepth
+    manifestValues.eventType !== 'vod' &&
+    currentLiveLength >= manifestValues.timeShiftBufferDepth &&
+    manifestValues.liveToVod === false
   ) {
     const updatedStartNumber = Math.floor(
       (currentLiveLength - manifestValues.timeShiftBufferDepth) /
@@ -78,6 +80,20 @@ export const calculateNewManifestValues = (
   }
 
   // calculate the new values for Live to VoD conversion
+  if (
+    manifestValues.eventType === 'live-to-vod' &&
+    manifestValues.liveToVod === true
+  ) {
+    calculatedManifestValues.manifestType = 'static'
+    const segmentsLengthinDVRWindow =
+      (calculatedManifestValues.segmentDuration /
+        calculatedManifestValues.timescale) *
+      (calculatedManifestValues.segmentTimelineRepeat + 1)
+    
+    calculatedManifestValues.mediaPresentationDuration =
+      segmentsLengthinDVRWindow
+    calculatedManifestValues.periodDuration = segmentsLengthinDVRWindow
+  }
 
   return {
     ...calculatedManifestValues,

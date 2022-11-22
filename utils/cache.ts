@@ -12,3 +12,16 @@ export const putManifestValuesToCache = (
 export const getManifestValuesFromCache = (key: string) => {
   return cache.get(key)
 }
+
+
+export const patchManifestValuesInCache = (
+  key: string,
+  property: string,
+  value: any
+) => {
+  const manifestValues = getManifestValuesFromCache(key)
+  if (manifestValues) {
+    manifestValues[property] = value
+    putManifestValuesToCache(key, manifestValues)
+  }
+}
