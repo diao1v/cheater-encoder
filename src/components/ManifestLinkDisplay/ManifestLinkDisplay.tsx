@@ -9,9 +9,18 @@ import {
   Input,
   Switch,
 } from '@mantine/core'
-import { IconLink, IconAccessPoint, IconAccessPointOff, IconLoader } from '@tabler/icons'
+import {
+  IconLink,
+  IconAccessPoint,
+  IconAccessPointOff,
+  IconLoader,
+} from '@tabler/icons'
 import { liveToVodPatcher } from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
+import {
+  showNotification,
+  updateNotification,
+} from '../../../utils/notifications'
 
 type Props = {
   manifestId: string
@@ -29,13 +38,25 @@ const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, eventType }) => {
     error,
     isLoading,
     isSuccess,
+    isError,
   } = useMutation(liveToVodPatcher, {
     onSuccess: (data) => {
-      console.log(data)
+      updateNotification({
+        id: 'encoder-off',
+        type: 'success',
+        title: 'Encoder off',
+        message: 'Successfully switch off encoder',
+      })
       setChecked(false)
     },
     onError: (error) => {
-      console.log(error)
+      updateNotification({
+        id: 'encoder-off',
+        type: 'error',
+        title: 'Error',
+        message: 'Something went wrong. Could not switch off encoder',
+      })
+      console.error(error)
     },
   })
 
@@ -48,6 +69,12 @@ const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, eventType }) => {
     updateManifestPartialValueToDatabase({
       manifestId: manifestId,
       liveToVod: true,
+    })
+    showNotification({
+      id: 'encoder-off',
+      type: 'loading',
+      title: 'Switching Off Encoder',
+      message: 'Updating manifest type to live-to-vod',
     })
   }
 
