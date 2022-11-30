@@ -12,8 +12,8 @@ const Footer: React.FC<Props> = ({ manifestsCount }) => {
       <Group position="center" spacing="xl">
         <Stack spacing={0}>
           <Group position="center" spacing={1}>
-            Made by Yiwei, with&nbsp;
-            <IconHeart size={16} color="red" fill="red" />, by accident.
+            Made by Yiwei, by accident, with&nbsp;
+            <IconHeart size={16} color="red" fill="red" />
           </Group>
           <Group position="center" spacing={5}>
             Total manifests has been created so far:

@@ -7,6 +7,7 @@ import { NotificationsProvider } from '@mantine/notifications'
 import Footer from '../src/components/Footer/'
 import Header from '../src/components/Header/'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ModalsProvider } from '@mantine/modals'
 
 const queryClient = new QueryClient()
 
@@ -31,24 +32,26 @@ export default function App(props: AppProps) {
           colorScheme: 'light',
         }}
       >
-        <NotificationsProvider>
-          <AppShell
-            padding="md"
-            header={<Header />}
-            styles={(theme) => ({
-              main: {
-                backgroundColor:
-                  theme.colorScheme === 'dark'
-                    ? theme.colors.dark[8]
-                    : theme.colors.gray[1],
-              },
-            })}
-            fixed
-            footer={<Footer manifestsCount={pageProps.manifestsCount} />}
-          >
-            <Component {...pageProps} />
-          </AppShell>
-        </NotificationsProvider>
+        <ModalsProvider>
+          <NotificationsProvider>
+            <AppShell
+              padding="md"
+              header={<Header />}
+              styles={(theme) => ({
+                main: {
+                  backgroundColor:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[8]
+                      : theme.colors.gray[1],
+                },
+              })}
+              fixed
+              footer={<Footer manifestsCount={pageProps.manifestsCount} />}
+            >
+              <Component {...pageProps} />
+            </AppShell>
+          </NotificationsProvider>
+        </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>
   )
