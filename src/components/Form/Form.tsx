@@ -17,7 +17,10 @@ import {
 import { IconInfoCircle } from '@tabler/icons'
 import { getDefaultValues } from '../../../helper/default-values'
 import { formValuesType, manifestValuesType } from '../../../helper/types'
-import { poster, putor } from '../../../utils/http-request'
+import {
+  manifestCreationPoster,
+  manifestUpdatePutor,
+} from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
 
 type Props = {
@@ -40,7 +43,7 @@ const Form: React.FC<Props> = ({
     error: saveManifestValuesToDatabaseError,
     isLoading: saveManifestValuesToDatabaseLoading,
     isSuccess: saveManifestValuesToDatabaseSuccess,
-  } = useMutation(poster, {
+  } = useMutation(manifestCreationPoster, {
     onSuccess: (data) => {
       console.log(data)
     },
@@ -54,7 +57,7 @@ const Form: React.FC<Props> = ({
     error: updateManifestValuesToDatabaseError,
     isLoading: updateManifestValuesToDatabaseLoading,
     isSuccess: updateManifestValuesToDatabaseSuccess,
-  } = useMutation(putor, {
+  } = useMutation(manifestUpdatePutor, {
     onSuccess: (data) => {
       console.log(data)
     },

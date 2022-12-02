@@ -11,22 +11,117 @@ import {
   Group,
 } from '@mantine/core'
 import { useForm, UseFormReturnType } from '@mantine/form'
+import { useMutation } from '@tanstack/react-query'
+import {
+  userSignupPoster,
+  userLoginPoster,
+  userLogoutPoster,
+} from '../../../utils/http-request'
+import { SignupValuesType, LoginValuesType } from '../../../helper/types'
+import {
+  showNotification,
+  updateNotification,
+} from '../../../utils/notifications'
+import { AxiosError } from 'axios'
+import { closeAllModals } from '@mantine/modals'
 
 type Props = {
   type: 'signup' | 'login'
 }
 
+type ErrorType = {
+  message: string
+}
+
 const Auth: React.FC<Props> = ({ type }) => {
   const [formType, setFormType] = React.useState(type)
+
+  const {
+    mutate: signup,
+    error: signupError,
+    isLoading: signupLoading,
+  } = useMutation(userSignupPoster, {
+    onSuccess: (data) => {
+      console.log(data)
+      showNotification({
+        id: 'signup',
+        type: 'success',
+        title: 'Signup success',
+        autoClose: 3000,
+        message: 'You have successfully signed up',
+      })
+      closeAllModals()
+    },
+    onError: (error: AxiosError) => {
+      console.log(error)
+      showNotification({
+        id: 'signup',
+        type: 'error',
+        title: 'Error',
+        autoClose: 5000,
+        message:
+          (error.response?.data as ErrorType).message ??
+          'Something went wrong. Could not signup',
+      })
+    },
+  })
+
+  const {
+    mutate: login,
+    error: loginError,
+    isLoading: loginLoading,
+  } = useMutation(userLoginPoster, {
+    onSuccess: (data) => {
+      console.log(data)
+      showNotification({
+        id: 'login',
+        type: 'success',
+        title: 'Login success',
+        autoClose: 3000,
+        message: 'You have successfully logged in',
+      })
+      closeAllModals()
+    },
+    onError: (error: AxiosError) => {
+      console.log(error)
+      showNotification({
+        id: 'login',
+        type: 'error',
+        title: 'Error',
+        autoClose: 5000,
+        message:
+          (error.response?.data as ErrorType).message ??
+          'Something went wrong. Could not login',
+      })
+    },
+  })
+
+
+
+  const signupFormSubmissionHandler = (values: SignupValuesType) => {
+    signup(values)
+  }
+
+  const loginFormSubmissionHandler = (values: LoginValuesType) => {
+    console.log(values)
+    login(values)
+  }
 
   const signupForm = useForm({
     initialValues: {
       email: '',
       password: '',
+      repeatPassword: '',
       invitationCode: '',
     },
     validateInputOnBlur: true,
-    validate: {},
+    validate: {
+      repeatPassword: (value, { password }) => {
+        if (value !== password) {
+          return 'Passwords must match'
+        }
+      },
+    },
   })
 
   const loginForm = useForm({
@@ -40,7 +135,11 @@ const Auth: React.FC<Props> = ({ type }) => {
 
   if (formType === 'signup') {
     return (
-      <form onSubmit={signupForm.onSubmit((values) => console.log(values))}>
+      <form
+        onSubmit={signupForm.onSubmit((values) =>
+          signupFormSubmissionHandler(values)
+        )}
+      >
         <Title
           size={25}
           weight={700}
@@ -62,6 +161,12 @@ const Auth: React.FC<Props> = ({ type }) => {
             placeholder="Enter your password"
             required
             {...signupForm.getInputProps('password')}
+          />
+          <PasswordInput
+            label="Confirm Password"
+            placeholder="Re-enter your password"
+            required
+            {...signupForm.getInputProps('repeatPassword')}
           />
           <TextInput
             label="Invitation Code"
@@ -88,7 +193,7 @@ const Auth: React.FC<Props> = ({ type }) => {
               type="submit"
               variant="gradient"
               gradient={{ from: 'teal', to: 'lime', deg: 105 }}
-              loading={false}
+              loading={signupLoading}
               loaderPosition="right"
             >
               Sign Up
@@ -99,7 +204,11 @@ const Auth: React.FC<Props> = ({ type }) => {
     )
   } else if (formType === 'login') {
     return (
-      <form onSubmit={loginForm.onSubmit((values) => console.log(values))}>
+      <form
+        onSubmit={loginForm.onSubmit((values) =>
+          loginFormSubmissionHandler(values)
+        )}
+      >
         <Title
           size={25}
           weight={700}
@@ -141,7 +250,7 @@ const Auth: React.FC<Props> = ({ type }) => {
               type="submit"
               variant="gradient"
               gradient={{ from: 'indigo', to: 'cyan', deg: 105 }}
-              loading={false}
+              loading={loginLoading}
               loaderPosition="right"
             >
               Login

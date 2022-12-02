@@ -1,16 +1,20 @@
 import axios from 'axios'
-import { manifestValuesType } from '../helper/types'
+import {
+  manifestValuesType,
+  SignupValuesType,
+  LoginValuesType,
+} from '../helper/types'
 
-export const poster = (manifestBody: manifestValuesType) => {
+export const manifestCreationPoster = (manifestBody: manifestValuesType) => {
   return axios.post('/api/create-manifest', manifestBody)
 }
 
-export const putor = (manifestBody: manifestValuesType) => {
+export const manifestUpdatePutor = (manifestBody: manifestValuesType) => {
   const manifestId = manifestBody.manifestId
   return axios.put(`api/${manifestId}/update-manifest`, manifestBody)
 }
 
-export const liveToVodPatcher = ({
+export const manifestLiveToVodPatcher = ({
   manifestId,
   liveToVod,
 }: {
@@ -18,4 +22,16 @@ export const liveToVodPatcher = ({
   liveToVod: boolean
 }) => {
   return axios.patch(`api/${manifestId}/update-manifest`, { liveToVod })
+}
+
+export const userLoginPoster = (loginValues: LoginValuesType) => {
+  return axios.post('/api/account/login', loginValues)
+}
+
+export const userSignupPoster = (signupValues: SignupValuesType) => {
+  return axios.post('/api/account/signup', signupValues)
+}
+
+export const userLogoutPoster = () => {
+  return axios.post('/api/account/logout')
 }

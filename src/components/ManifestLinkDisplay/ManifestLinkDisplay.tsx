@@ -15,7 +15,7 @@ import {
   IconAccessPointOff,
   IconLoader,
 } from '@tabler/icons'
-import { liveToVodPatcher } from '../../../utils/http-request'
+import { manifestLiveToVodPatcher } from '../../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
 import {
   showNotification,
@@ -39,7 +39,7 @@ const ManifestLinkDisplay: React.FC<Props> = ({ manifestId, eventType }) => {
     isLoading,
     isSuccess,
     isError,
-  } = useMutation(liveToVodPatcher, {
+  } = useMutation(manifestLiveToVodPatcher, {
     onSuccess: (data) => {
       updateNotification({
         id: 'encoder-off',

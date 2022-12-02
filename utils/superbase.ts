@@ -46,6 +46,54 @@ export const countManifestsInSupabase = async () => {
     .select('manifestId', { count: 'exact' })
 }
 
+export const checkInvitationCode = async (invitationCode: string) => {
+  console.log('invitationCode', invitationCode)
+  return await supabase
+    .from('invitationCodes')
+    .select('*')
+    .eq('code', invitationCode)
+}
+
+export const userSignup = async (
+  email: string,
+  password: string,
+  invitationCode: string
+) => {
+  return await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        invitationCode,
+      },
+    },
+  })
+}
+
+export const userLogin = async (email: string, password: string) => {
+  return await supabase.auth.signInWithPassword({ email, password })
+}
+
+export const userLogout = async () => {
+  return await supabase.auth.signOut()
+}
+
+// For server side Auth
+const supabaseServerRoleKey = process.env.SUPABAE_SERVER_ROLE_KEY!
+const supabaseServerRole = createClient(supabaseUrl, supabaseServerRoleKey)
+
+export const serverSideUserSignup = async (
+  email: string,
+  password: string,
+  invitationCode: string
+) => {
+  return await supabaseServerRole.auth.admin.createUser({
+    email,
+    password,
+    user_metadata: { invitationCode },
+  })
+}
+
 type ManifestsResponse = Awaited<
   ReturnType<typeof getManifestValuesFromSupabase>
 >
