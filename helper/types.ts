@@ -41,3 +41,14 @@ export type formValuesType = {
   segmentStartTime: number
   segmentDuration: number
 }
+
+export type SignupValuesType = {
+  email: string
+  password: string
+  invitationCode: string
+}
+
+export type LoginValuesType = {
+  email: string
+  password: string
+}

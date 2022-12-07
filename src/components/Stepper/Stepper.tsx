@@ -12,7 +12,7 @@ import EventTypeSwitcher from '../EventTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
 
 const Stepper: React.FC = () => {
-  const [step, setStep] = useState<number>(2)
+  const [step, setStep] = useState<number>(0)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
   )

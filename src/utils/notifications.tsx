@@ -9,6 +9,7 @@ type notificationType = {
   type: 'success' | 'error' | 'loading'
   title: string
   message: string
+  autoClose?: boolean | number
 }
 
 export const showNotification = ({
@@ -16,6 +17,7 @@ export const showNotification = ({
   type,
   title,
   message,
+  autoClose = true,
 }: notificationType) => {
   if (type === 'loading') {
     mantineShowNotification({
@@ -35,7 +37,7 @@ export const showNotification = ({
       message: message,
       color: 'teal',
       icon: <IconCheck size={16} />,
-      autoClose: 2500,
+      autoClose: autoClose,
     })
   }
 
@@ -45,7 +47,7 @@ export const showNotification = ({
       message: message,
       color: 'red',
       icon: <IconX size={16} />,
-      autoClose: 2500,
+      autoClose: autoClose,
     })
   }
 }
