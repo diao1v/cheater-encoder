@@ -3,7 +3,7 @@ import {
   manifestValuesType,
   SignupValuesType,
   LoginValuesType,
-} from '../helper/types'
+} from '../../helper/types'
 
 export const manifestCreationPoster = (manifestBody: manifestValuesType) => {
   return axios.post('/api/create-manifest', manifestBody)

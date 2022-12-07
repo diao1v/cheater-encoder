@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../helper/types'
+import { manifestValuesType } from '../../helper/types'
 import { getUnixTime } from './time-conversion'
 
 // need to calculate the following values:
@@ -89,7 +89,7 @@ export const calculateNewManifestValues = (
       (calculatedManifestValues.segmentDuration /
         calculatedManifestValues.timescale) *
       (calculatedManifestValues.segmentTimelineRepeat + 1)
-    
+
     calculatedManifestValues.mediaPresentationDuration =
       segmentsLengthinDVRWindow
     calculatedManifestValues.periodDuration = segmentsLengthinDVRWindow

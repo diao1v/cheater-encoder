@@ -15,12 +15,9 @@ import {
   IconAccessPointOff,
   IconLoader,
 } from '@tabler/icons'
-import { manifestLiveToVodPatcher } from '../../../utils/http-request'
+import { manifestLiveToVodPatcher } from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
-import {
-  showNotification,
-  updateNotification,
-} from '../../../utils/notifications'
+import { showNotification, updateNotification } from '../../utils/notifications'
 
 type Props = {
   manifestId: string

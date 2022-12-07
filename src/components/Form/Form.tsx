@@ -20,7 +20,7 @@ import { formValuesType, manifestValuesType } from '../../../helper/types'
 import {
   manifestCreationPoster,
   manifestUpdatePutor,
-} from '../../../utils/http-request'
+} from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
 
 type Props = {

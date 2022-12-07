@@ -1,5 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { checkInvitationCode, serverSideUserSignup } from '../../../utils/superbase'
+import {
+  checkInvitationCode,
+  userSignup,
+} from '../../../src/utils/superbase-database'
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type SignupType = {
   email: string
@@ -12,26 +16,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).json({ message: 'Method not allowed' })
   }
 
-  const signupData: SignupType = req.body
+  const supabaseServerClient = createServerSupabaseClient({
+    req,
+    res,
+  })
+
+  const { email, password, invitationCode }: SignupType = req.body
 
   //check if the invatation code is valid
-  const { data, error } = await checkInvitationCode(signupData.invitationCode)
+  const { data, error } = await checkInvitationCode(
+    supabaseServerClient,
+    invitationCode
+  )
 
   if (error) {
     return res
       .status(403)
       .json({ message: "couldn't verify the invitation code" })
   }
-  
+
   if (data.length === 0) {
     return res.status(403).json({ message: 'Invitation code is not valid' })
   }
 
   //signup the user
-  const { data: user, error: signupError } = await serverSideUserSignup(
-    signupData.email,
-    signupData.password,
-    signupData.invitationCode
+  const { data: user, error: signupError } = await userSignup(
+    supabaseServerClient,
+    {
+      email,
+      password,
+      invitationCode,
+    }
   )
 
   if (signupError) {

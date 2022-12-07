@@ -1,29 +1,21 @@
-import Stepper from '../src/components/Stepper'
-import { countManifestsInSupabase } from '../utils/superbase'
+import { GetServerSidePropsContext } from 'next'
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 export default function Home() {
-  return (
-    <>
-      <Stepper />
-    </>
-  )
+  return <>This is home page</>
 }
 
-export async function getServerSideProps() {
-  const { count: manifestsCount, error } = await countManifestsInSupabase()
-
-  if (error) {
-    console.error(error)
-    return {
-      props: {
-        manifestsCount: '???',
-      },
-    }
-  }
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  // Create authenticated Supabase Client
+  const supabase = createServerSupabaseClient(ctx)
+  // Check if we have a session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
   return {
     props: {
-      manifestsCount,
+      initialSession: session,
     },
   }
 }

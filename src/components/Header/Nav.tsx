@@ -4,21 +4,23 @@ import Auth from '../Auth'
 import { openModal } from '../../ui/modal/Modal'
 import { AxiosError } from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import { showNotification } from '../../../utils/notifications'
-import { userLogoutPoster } from '../../../utils/http-request'
+import { showNotification } from '../../utils/notifications'
+import { userLogoutPoster } from '../../utils/http-request'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 type ErrorType = {
   message: string
 }
 
 const Nav: React.FC = () => {
+  const router = useRouter()
   const {
     mutate: logout,
     error: logoutError,
     isLoading: logoutLoading,
   } = useMutation(userLogoutPoster, {
     onSuccess: (data) => {
-      console.log(data)
       showNotification({
         id: 'logout',
         type: 'success',
@@ -26,6 +28,7 @@ const Nav: React.FC = () => {
         autoClose: 3000,
         message: 'You have successfully logged out',
       })
+      router.reload()
     },
     onError: (error: AxiosError) => {
       console.log(error)
@@ -50,6 +53,11 @@ const Nav: React.FC = () => {
       <Button variant="gradient" gradient={{ from: 'orange', to: 'red' }}>
         Account
       </Button>
+      <Link href={'/create-manifest'} passHref>
+        <Button variant="gradient" gradient={{ from: 'yellow', to: 'blue' }}>
+          Create
+        </Button>
+      </Link>
       <Button
         variant="gradient"
         gradient={{ from: 'teal', to: 'lime', deg: 105 }}

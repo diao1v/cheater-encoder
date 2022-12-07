@@ -11,6 +11,7 @@ import { ModalsProvider } from '@mantine/modals'
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
 import { useState } from 'react'
+import { NextPage } from 'next'
 
 const queryClient = new QueryClient()
 
@@ -18,7 +19,6 @@ export default function App({
   Component,
   pageProps,
 }: AppProps<{
-  manifestsCount: number
   initialSession: Session
 }>) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient())
@@ -59,7 +59,7 @@ export default function App({
                   },
                 })}
                 fixed
-                footer={<Footer manifestsCount={pageProps.manifestsCount} />}
+                footer={<Footer />}
               >
                 <Component {...pageProps} />
               </AppShell>
@@ -70,3 +70,4 @@ export default function App({
     </QueryClientProvider>
   )
 }
+

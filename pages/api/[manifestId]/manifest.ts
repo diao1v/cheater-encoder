@@ -2,20 +2,26 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   putManifestValuesToCache,
   getManifestValuesFromCache,
-} from '../../../utils/cache'
+} from '../../../src/utils/cache'
 import {
   getManifestValuesFromSupabase,
   putManifestValuesToSupabase,
-} from '../../../utils/superbase'
-import { createManifestFile } from '../../../utils/manifest-creation'
+} from '../../../src/utils/superbase-database'
+import { createManifestFile } from '../../../src/utils/manifest-creation'
 import { statSync, createReadStream } from 'fs'
 import { manifestValuesType } from '../../../helper/types'
-import { getCurrentTime, getUnixTime } from '../../../utils/time-conversion'
+import { getCurrentTime, getUnixTime } from '../../../src/utils/time-conversion'
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
+
+  const supabaseServerClient = createServerSupabaseClient({
+    req,
+    res,
+  })
 
   let manifestValues: manifestValuesType
 
@@ -26,7 +32,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!manifestValues) {
     const { data: manifests, error: fetchFromSupabaseError } =
-      await getManifestValuesFromSupabase(manifestId as string)
+      await getManifestValuesFromSupabase(
+        supabaseServerClient,
+        manifestId as string
+      )
 
     if (fetchFromSupabaseError) {
       return res.status(500).json({ error: fetchFromSupabaseError.message })
@@ -45,16 +54,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // the manifest available time will be set to the current time
   // and set the playStarted to true
   const currentTime = getCurrentTime()
-  if (
-    manifestValues.playStarted === false
-  ) {
+  if (manifestValues.playStarted === false) {
     manifestValues.availabilityStartTime = currentTime
     manifestValues.playStarted = true
     putManifestValuesToCache(manifestId as string, manifestValues)
 
     const { error: putToSupabaseError } = await putManifestValuesToSupabase(
-      manifestId as string,
-      manifestValues
+      supabaseServerClient,
+      {
+        manifestId: manifestId as string,
+        manifestValues,
+      }
     )
     if (putToSupabaseError) {
       return res.status(404).json({ error: putToSupabaseError.message })
