@@ -80,7 +80,7 @@ const Auth: React.FC<Props> = ({ type }) => {
         message: 'You have successfully logged in',
       })
       closeAllModals()
-      // router.reload()
+      router.reload()
     },
     onError: (error: AxiosError) => {
       console.log(error)
