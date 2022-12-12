@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { countManifestsInSupabase } from '../utils/superbase-database'
+import { countManifestsInSupabase } from '../utils/supabase-database'
 
 export const useManifestCount = (supabaseClient: any) => {
   return useQuery(

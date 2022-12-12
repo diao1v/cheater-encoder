@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { showNotification } from '../../utils/notifications'
 import { userLogoutPoster } from '../../utils/http-request'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 type Props = {
   children: React.ReactNode
@@ -54,11 +55,12 @@ const AccountMenu: React.FC<Props> = ({ children }) => {
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>{children}</Menu.Target>
-
       <Menu.Dropdown>
-        <Menu.Item icon={<IconListDetails size={14} />}>
-          Defailt Settings
-        </Menu.Item>
+        <Link href="/manifest-settings" passHref>
+          <Menu.Item icon={<IconListDetails size={14} />}>
+            Manifest Settings
+          </Menu.Item>
+        </Link>
         <Menu.Item icon={<IconLogout size={14} />} onClick={logoutHandler}>
           Logout
         </Menu.Item>

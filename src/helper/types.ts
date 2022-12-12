@@ -22,6 +22,7 @@ export type manifestValuesType = {
   segmentTimelineRepeat: number
   playStarted: boolean
   liveToVod: boolean
+  userId: string
 }
 
 export type formValuesType = {
@@ -51,4 +52,47 @@ export type SignupValuesType = {
 export type LoginValuesType = {
   email: string
   password: string
+}
+
+export type DefaultValuesType = {
+  baseURL: string
+  fileBaseName: string
+  availabilityStartTime: string
+  liveDuration: number
+  minimumUpdatePeriod: number
+  minBufferTime: number
+  timeShiftBufferDepth: number
+  suggestedPresentationDelay: number
+  vodPeriodStart: number
+  periodDuration: number
+  timescale: number
+  segmentPresentationTimeOffset: number
+  segmentPresentationTimeOffsetDiff: boolean
+  segmentStartNumber: number
+  segmentStartTime: number
+  segmentDuration: number
+  mediaPresentationDuration: number
+  segmentTimelineRepeat: number
+  playStarted: boolean
+  liveToVod: boolean
+}
+
+export type FetchedDefaultValuesType = {
+  baseURL: string
+  fileBaseName: string
+  liveDuration: number
+  minimumUpdatePeriod: number
+  minBufferTime: number
+  timeShiftBufferDepth: number
+  suggestedPresentationDelay: number
+  vodPeriodStart: number
+  periodDuration: number
+  timescale: number
+  segmentPresentationTimeOffset: number
+  segmentPresentationTimeOffsetDiff: boolean
+  segmentStartNumber: number
+  segmentStartTime: number
+  segmentDuration: number
+  mediaPresentationDuration: number
+  segmentTimelineRepeat: number
 }

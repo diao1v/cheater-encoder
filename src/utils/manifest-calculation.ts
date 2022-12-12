@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../../helper/types'
+import { manifestValuesType } from '../helper/types'
 import { getUnixTime } from './time-conversion'
 
 // need to calculate the following values:

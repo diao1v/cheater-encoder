@@ -3,7 +3,7 @@ import { patchManifestValuesInCache } from '../../../src/utils/cache'
 import {
   putManifestValuesToSupabase,
   patchManifestValueToSupabase,
-} from '../../../src/utils/superbase-database'
+} from '../../../src/utils/supabase-database'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -21,12 +21,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     data: { session },
   } = await supabaseServerClient.auth.getSession()
 
-  if (!session)
+  if (!session) {
     return res.status(401).json({
       error: 'not_authenticated',
       description:
         'The user does not have an active session or is not authenticated',
     })
+  }
 
   const { manifestId } = req.query
   const { liveToVod } = req.body

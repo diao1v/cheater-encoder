@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../../helper/types'
+import { manifestValuesType } from '../helper/types'
 
 export const addManifestValuesToSupabse = async (
   supabaseServerClient: any,
@@ -47,12 +47,6 @@ export const patchManifestValueToSupabase = async (
     .eq('manifestId', manifestId)
 }
 
-export const countManifestsInSupabase = async (supabaseBrowserClient: any) => {
-  return await supabaseBrowserClient
-    .from('manifests')
-    .select('manifestId', { count: 'exact' })
-}
-
 export const checkInvitationCode = async (
   supabaseServerClient: any,
   invitationCode: string
@@ -98,22 +92,33 @@ export const getLoggedinUser = async (supabaseServerClient: any) => {
   return await supabaseServerClient.auth.getUser()
 }
 
-// For server side Auth
-// const supabaseServerUrl = process.env.SUPABASE_URL!
-// const supabaseServerRoleKey = process.env.SUPABAE_SERVER_ROLE_KEY!
-// const supabaseServerRole = createClient(supabaseServerUrl, supabaseServerRoleKey)
+export const getUserDefaultValues = async (
+  supabaseServerClient: any,
+  userId: string
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .select('*')
+    .eq('userId', userId)
+}
 
-// export const serverSideUserSignup = async (
-//   email: string,
-//   password: string,
-//   invitationCode: string
-// ) => {
-//   return await supabaseServerRole.auth.admin.createUser({
-//     email,
-//     password,
-//     user_metadata: { invitationCode },
-//   })
-// }
+export const updateUserDefaultValues = async (
+  supabaseServerClient: any,
+  userId: string,
+  updatedDefaultValues: any
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .update(updatedDefaultValues)
+    .eq('userId', userId)
+}
+
+// Supabase browser client
+export const countManifestsInSupabase = async (supabaseBrowserClient: any) => {
+  return await supabaseBrowserClient
+    .from('manifests')
+    .select('manifestId', { count: 'exact' })
+}
 
 type ManifestsResponse = Awaited<
   ReturnType<typeof getManifestValuesFromSupabase>

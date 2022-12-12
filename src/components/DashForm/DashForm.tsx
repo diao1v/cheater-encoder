@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import FormSection from './FormSection'
+import DashFormSection from './DashFormSection'
 import { useForm, UseFormReturnType } from '@mantine/form'
 import {
   TextInput,
@@ -15,15 +15,18 @@ import {
   Select,
 } from '@mantine/core'
 import { IconInfoCircle } from '@tabler/icons'
-import { getDefaultValues } from '../../../helper/default-values'
-import { formValuesType, manifestValuesType } from '../../../helper/types'
+import { getInitialDefaultValues } from '../../helper/default-values'
+import { formValuesType, manifestValuesType } from '../../helper/types'
 import {
   manifestCreationPoster,
   manifestUpdatePutor,
 } from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
+import type { DefaultValuesType } from '../../helper/types'
 
 type Props = {
+  userId: string
+  defaultValues: DefaultValuesType
   eventType: 'live' | 'vod' | 'live-to-vod'
   manifestId: string
   submitRef: React.MutableRefObject<any>
@@ -31,7 +34,9 @@ type Props = {
   setFormSubmited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Form: React.FC<Props> = ({
+const DashForm: React.FC<Props> = ({
+  userId,
+  defaultValues,
   eventType,
   manifestId,
   submitRef,
@@ -66,16 +71,18 @@ const Form: React.FC<Props> = ({
     },
   })
 
-  const defaultManifestValues = getDefaultValues()
+  const defaultManifestValues = defaultValues
 
   const formSubmissionHandler = (formValues: formValuesType) => {
     const manifestValues: manifestValuesType = {
+      userId,
       manifestId,
       eventType,
       manifestType: eventType === 'vod' ? 'static' : 'dynamic',
       ...defaultManifestValues,
       ...formValues,
     }
+
     if (formSubmited === false) {
       saveManifestValuesToDatabase(manifestValues)
       setFormSubmited(true)
@@ -99,7 +106,7 @@ const Form: React.FC<Props> = ({
   return (
     <Paper shadow="xs" radius="xs" p="md" sx={{ width: '90%', margin: 'auto' }}>
       <form onSubmit={form.onSubmit((values) => formSubmissionHandler(values))}>
-        <FormSection title={'Required Section'}>
+        <DashFormSection title={'Required Section'}>
           <Stack spacing={10}>
             <TextInput
               withAsterisk
@@ -195,9 +202,9 @@ const Form: React.FC<Props> = ({
               />
             </SimpleGrid>
           </Stack>
-        </FormSection>
+        </DashFormSection>
         {eventType === 'live-to-vod' && (
-          <FormSection title={'Optional Section'}>
+          <DashFormSection title={'Optional Section'}>
             <SimpleGrid
               cols={3}
               breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
@@ -256,7 +263,7 @@ const Form: React.FC<Props> = ({
                 {...form.getInputProps('vodPeriodStart')}
               />
             </SimpleGrid>
-          </FormSection>
+          </DashFormSection>
         )}
         <Group position="right" mt="md">
           <Button ref={submitRef} type="submit" style={{ display: 'none' }}>
@@ -268,4 +275,4 @@ const Form: React.FC<Props> = ({
   )
 }
 
-export default Form
+export default DashForm

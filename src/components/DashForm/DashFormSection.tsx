@@ -7,7 +7,7 @@ type Props = {
   children: React.ReactNode
 }
 
-const FormSection: React.FC<Props> = ({ title, children }) => {
+const DashFormSection: React.FC<Props> = ({ title, children }) => {
   const [opened, setOpened] = useState(true)
 
   return (
@@ -35,4 +35,4 @@ const FormSection: React.FC<Props> = ({ title, children }) => {
   )
 }
 
-export default FormSection
+export default DashFormSection

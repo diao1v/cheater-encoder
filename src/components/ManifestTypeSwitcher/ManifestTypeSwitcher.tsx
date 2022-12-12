@@ -1,5 +1,5 @@
 import React from 'react'
-import { SegmentedControl, Stack, Tooltip } from '@mantine/core'
+import { SegmentedControl, Stack, Tooltip, Divider, Title } from '@mantine/core'
 
 type Props = {
   protocalType: 'dash' | 'hls'
@@ -15,7 +15,14 @@ const ManifestTypeSwitcher: React.FC<Props> = ({
   setEventType,
 }) => {
   return (
-    <Stack spacing={100} my={140}>
+    <Stack mt={100} spacing={10} sx={{ textAlign: 'center' }}>
+      <Title
+        order={2}
+        variant="gradient"
+        gradient={{ from: '#373A40', to: '#868E96', deg: 60 }}
+      >
+        Choose Protocal Type
+      </Title>
       <Tooltip
         width={300}
         multiline={true}
@@ -33,6 +40,14 @@ const ManifestTypeSwitcher: React.FC<Props> = ({
           ]}
         />
       </Tooltip>
+      <Divider my={70} variant="dashed" />
+      <Title
+        order={2}
+        variant="gradient"
+        gradient={{ from: '#373A40', to: '#868E96', deg: 60 }}
+      >
+        Choose Event Type
+      </Title>
       <SegmentedControl
         value={eventType}
         onChange={setEventType}

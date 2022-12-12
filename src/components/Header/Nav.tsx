@@ -22,7 +22,7 @@ const Nav: React.FC = () => {
             </Button>
           </Link>
           <AccountMenu>
-            <Button variant="gradient" gradient={{ from: 'orange', to: 'yellow' }}>
+            <Button variant="gradient" gradient={{ from: 'red', to: 'yellow' }}>
               Account
             </Button>
           </AccountMenu>

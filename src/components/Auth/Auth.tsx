@@ -17,7 +17,7 @@ import {
   userLoginPoster,
   userLogoutPoster,
 } from '../../utils/http-request'
-import { SignupValuesType, LoginValuesType } from '../../../helper/types'
+import { SignupValuesType, LoginValuesType } from '../../helper/types'
 import { showNotification, updateNotification } from '../../utils/notifications'
 import { AxiosError } from 'axios'
 import { closeAllModals } from '@mantine/modals'

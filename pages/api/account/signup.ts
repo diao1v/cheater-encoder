@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   checkInvitationCode,
   userSignup,
-} from '../../../src/utils/superbase-database'
+} from '../../../src/utils/supabase-database'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type SignupType = {

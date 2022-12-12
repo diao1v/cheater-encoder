@@ -7,11 +7,17 @@ import {
   Stack,
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
-import Form from '../Form'
+import DashForm from '../DashForm'
 import ManifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
+import type { DefaultValuesType } from '../../helper/types'
 
-const Stepper: React.FC = () => {
+type Props = {
+  userId: string
+  defaultValues: DefaultValuesType
+}
+
+const Stepper: React.FC<Props> = ({ userId, defaultValues }) => {
   const [step, setStep] = useState<number>(0)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
@@ -56,7 +62,9 @@ const Stepper: React.FC = () => {
           >
             <Group position="center">
               {protocalType === 'dash' ? (
-                <Form
+                <DashForm
+                  userId={userId}
+                  defaultValues={defaultValues}
                   eventType={eventType}
                   manifestId={manifestId}
                   submitRef={submitRef}
