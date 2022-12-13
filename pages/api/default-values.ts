@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import {
   updateUserDefaultValues,
   getUserDefaultValues,
+  insertUserDefaultValues,
 } from '../../src/utils/supabase-database'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -44,16 +45,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
-    const { defaultValues } = req.body
+    const defaultValues = req.body
 
-    const { error } = await updateUserDefaultValues(
+    // check if user has default values
+    const { data: userDefaultValues, error: findValueError } =
+      await getUserDefaultValues(supabaseServerClient, userId)
+
+    if (findValueError) {
+      return res.status(500).json({ error: findValueError.message })
+    }
+
+    // insert default values if user doesn't have any
+    if (!userDefaultValues[0]) {
+      const { error: insertError } = await insertUserDefaultValues(
+        supabaseServerClient,
+        userId,
+        defaultValues
+      )
+
+      if (insertError) {
+        return res.status(500).json({ error: insertError.message })
+      }
+
+      return res.status(200).json({ message: 'Default values created' })
+    }
+
+    // update default values if user already has one
+    const { error: updateError } = await updateUserDefaultValues(
       supabaseServerClient,
       userId,
       defaultValues
     )
 
-    if (error) {
-      return res.status(500).json({ error: error.message })
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message })
     }
 
     return res.status(200).json({ message: 'Default values updated' })

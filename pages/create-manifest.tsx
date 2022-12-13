@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
 import { getUserDefaultValues } from '../src/utils/supabase-database'
 import type { DefaultValuesType } from '../src/helper/types'
-import { getInitialDefaultValues } from '../src/helper/default-values'
+import { getInitialManifestDefaultValues } from '../src/helper/default-values'
 
 type PageProps = {
   user: User
@@ -35,7 +35,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     session.user.id
   )
 
-  let defaultValues: DefaultValuesType = getInitialDefaultValues()
+  let defaultValues: DefaultValuesType = getInitialManifestDefaultValues()
 
   if (error) {
     console.log(error)

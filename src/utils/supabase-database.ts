@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../helper/types'
+import { manifestValuesType, FetchedDefaultValuesType } from '../helper/types'
 
 export const addManifestValuesToSupabse = async (
   supabaseServerClient: any,
@@ -102,14 +102,24 @@ export const getUserDefaultValues = async (
     .eq('userId', userId)
 }
 
-export const updateUserDefaultValues = async (
+export const insertUserDefaultValues = async(
   supabaseServerClient: any,
   userId: string,
-  updatedDefaultValues: any
+  defaultValues: FetchedDefaultValuesType
 ) => {
   return await supabaseServerClient
     .from('defaultValues')
-    .update(updatedDefaultValues)
+    .insert({ userId, ...defaultValues })
+}
+
+export const updateUserDefaultValues = async (
+  supabaseServerClient: any,
+  userId: string,
+  updatedDefaultValues: FetchedDefaultValuesType
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .update({ ...updatedDefaultValues })
     .eq('userId', userId)
 }
 

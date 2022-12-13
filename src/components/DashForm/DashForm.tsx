@@ -15,7 +15,6 @@ import {
   Select,
 } from '@mantine/core'
 import { IconInfoCircle } from '@tabler/icons'
-import { getInitialDefaultValues } from '../../helper/default-values'
 import { formValuesType, manifestValuesType } from '../../helper/types'
 import {
   manifestCreationPoster,
@@ -23,6 +22,7 @@ import {
 } from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
 import type { DefaultValuesType } from '../../helper/types'
+import { showNotification, updateNotification } from '../../utils/notifications'
 
 type Props = {
   userId: string
@@ -65,8 +65,21 @@ const DashForm: React.FC<Props> = ({
   } = useMutation(manifestUpdatePutor, {
     onSuccess: (data) => {
       console.log(data)
+      updateNotification({
+        id: 'create-manifest',
+        type: 'success',
+        title: 'Manifest Created!',
+        message: 'Manifest created successfully!',
+      })
     },
     onError: (error) => {
+      updateNotification({
+        id: 'create-manifest',
+        type: 'error',
+        title: 'Error',
+        message:
+          'Something went wrong. Could not create manifest.'
+      })
       console.log(error)
     },
   })
@@ -85,12 +98,24 @@ const DashForm: React.FC<Props> = ({
 
     if (formSubmited === false) {
       saveManifestValuesToDatabase(manifestValues)
+      showNotification({
+        id: 'create-manifest',
+        type: 'loading',
+        title: 'Create Manifest',
+        message: 'Creating manifest. Please wait...',
+      })
       setFormSubmited(true)
       return
     }
     if (formSubmited === true) {
       // update the stored manifest values
       updateManifestValuesToDatabase(manifestValues)
+      showNotification({
+        id: 'create-manifest',
+        type: 'loading',
+        title: 'Create Manifest',
+        message: 'Updating manifest. Please wait...',
+      })
       return
     }
   }

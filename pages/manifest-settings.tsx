@@ -3,6 +3,7 @@ import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
 import type { FetchedDefaultValuesType } from '../src/helper/types'
 import { getUserDefaultValues } from '../src/utils/supabase-database'
 import DefaultValuesForm from '../src/components/DefaultValuesForm'
+import { getInitialUserDefaultValues } from '../src/helper/default-values'
 import { Text, Stack, Title } from '@mantine/core'
 
 type PageProps = {
@@ -32,7 +33,8 @@ export default function ManifestSettingsPage({
         Default Manifest Settings
       </Title>
       <Text size={15}>
-        These settings will be used as default values for your manifests:
+        You can pre-setup your default manifest values here. These values will
+        be used as default values when you creating your customered manifests:
       </Text>
       {error ? (
         <Text size={20}>{error}</Text>
@@ -64,12 +66,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     session.user.id
   )
 
-  if (error || !userDefaultValues[0]) {
+  if (error) {
     return {
       props: {
         initialSession: session,
         user: session.user,
-        error: error?.message || 'No default values found, please try again',
+        error: error?.message,
+      },
+    }
+  }
+
+  if (!userDefaultValues[0]) {
+    return {
+      props: {
+        initialSession: session,
+        user: session.user,
+        defaultValues: getInitialUserDefaultValues(),
       },
     }
   }

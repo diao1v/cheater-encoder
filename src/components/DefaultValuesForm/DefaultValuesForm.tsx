@@ -15,6 +15,9 @@ import {
   Select,
   Box,
 } from '@mantine/core'
+import { useMutation } from '@tanstack/react-query'
+import { defaultValuesPoster } from '../../utils/http-request'
+import { showNotification, updateNotification } from '../../utils/notifications'
 import { IconInfoCircle } from '@tabler/icons'
 
 type Props = {
@@ -23,6 +26,32 @@ type Props = {
 }
 
 const DefaultValuesForm: React.FC<Props> = ({ userId, defaultValues }) => {
+  const {
+    mutate: updateDefaultValuesToDatabase,
+    error: updateDefaultValuesToDatabaseError,
+    isLoading: updateDefaultValuesToDatabaseLoading,
+    isSuccess: updateDefaultValuesToDatabaseSuccess,
+  } = useMutation(defaultValuesPoster, {
+    onSuccess: (data) => {
+      updateNotification({
+        id: 'update-default-values',
+        type: 'success',
+        title: 'Default Values Updated!',
+        message: 'Default values updated successfully!',
+      })
+    },
+    onError: (error) => {
+      updateNotification({
+        id: 'update-default-values',
+        type: 'error',
+        title: 'Error',
+        message:
+          'Something went wrong. Could not update default values. Please refresh the page and try again later.',
+      })
+      console.log(error)
+    },
+  })
+
   const form = useForm({
     initialValues: {
       ...defaultValues,
@@ -32,10 +61,13 @@ const DefaultValuesForm: React.FC<Props> = ({ userId, defaultValues }) => {
   })
 
   const formSubmissionHandler = (values: FetchedDefaultValuesType) => {
-    console.log(values)
-
-    // TO-Do: Save the values to the database
-    
+    updateDefaultValuesToDatabase(values)
+    showNotification({
+      id: 'update-default-values',
+      type: 'loading',
+      title: 'Default Values Updating...',
+      message: 'Updating default values...',
+    })
   }
 
   return (

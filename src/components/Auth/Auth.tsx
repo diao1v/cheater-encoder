@@ -46,8 +46,8 @@ const Auth: React.FC<Props> = ({ type }) => {
         id: 'signup',
         type: 'success',
         title: 'Signup success',
-        autoClose: 3000,
-        message: 'You have successfully signed up',
+        autoClose: 5000,
+        message: 'You have successfully signed up. Please check you inbox to confirm the email address',
       })
       closeAllModals()
     },
