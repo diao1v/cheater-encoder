@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { addManifestValuesToSupabse } from '../../src/utils/superbase-database'
+import { addManifestValuesToSupabse } from '../../src/utils/supabase-database'
 import { putManifestValuesToCache } from '../../src/utils/cache'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 

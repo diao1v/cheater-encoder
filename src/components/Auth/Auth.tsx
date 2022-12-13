@@ -17,7 +17,7 @@ import {
   userLoginPoster,
   userLogoutPoster,
 } from '../../utils/http-request'
-import { SignupValuesType, LoginValuesType } from '../../../helper/types'
+import { SignupValuesType, LoginValuesType } from '../../helper/types'
 import { showNotification, updateNotification } from '../../utils/notifications'
 import { AxiosError } from 'axios'
 import { closeAllModals } from '@mantine/modals'
@@ -46,8 +46,8 @@ const Auth: React.FC<Props> = ({ type }) => {
         id: 'signup',
         type: 'success',
         title: 'Signup success',
-        autoClose: 3000,
-        message: 'You have successfully signed up',
+        autoClose: 5000,
+        message: 'You have successfully signed up. Please check you inbox to confirm the email address',
       })
       closeAllModals()
     },
@@ -80,7 +80,7 @@ const Auth: React.FC<Props> = ({ type }) => {
         message: 'You have successfully logged in',
       })
       closeAllModals()
-      // router.reload()
+      router.reload()
     },
     onError: (error: AxiosError) => {
       console.log(error)

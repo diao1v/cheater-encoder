@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { userLogin } from '../../../src/utils/superbase-database'
+import { userLogin } from '../../../src/utils/supabase-database'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type LoginType = {
@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
-  
+
   const supabaseServerClient = createServerSupabaseClient({
     req,
     res,

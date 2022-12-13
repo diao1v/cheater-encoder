@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../../helper/types'
+import { manifestValuesType, FetchedDefaultValuesType } from '../helper/types'
 
 export const addManifestValuesToSupabse = async (
   supabaseServerClient: any,
@@ -29,7 +29,7 @@ export const putManifestValuesToSupabase = async (
 ) => {
   return await supabaseServerClient
     .from('manifests')
-    .update(manifestValues)
+    .update({...manifestValues})
     .eq('manifestId', manifestId)
 }
 
@@ -45,12 +45,6 @@ export const patchManifestValueToSupabase = async (
     .from('manifests')
     .update({ [coloum]: updatedValue })
     .eq('manifestId', manifestId)
-}
-
-export const countManifestsInSupabase = async (supabaseBrowserClient: any) => {
-  return await supabaseBrowserClient
-    .from('manifests')
-    .select('manifestId', { count: 'exact' })
 }
 
 export const checkInvitationCode = async (
@@ -98,22 +92,43 @@ export const getLoggedinUser = async (supabaseServerClient: any) => {
   return await supabaseServerClient.auth.getUser()
 }
 
-// For server side Auth
-// const supabaseServerUrl = process.env.SUPABASE_URL!
-// const supabaseServerRoleKey = process.env.SUPABAE_SERVER_ROLE_KEY!
-// const supabaseServerRole = createClient(supabaseServerUrl, supabaseServerRoleKey)
+export const getUserDefaultValues = async (
+  supabaseServerClient: any,
+  userId: string
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .select('*')
+    .eq('userId', userId)
+}
 
-// export const serverSideUserSignup = async (
-//   email: string,
-//   password: string,
-//   invitationCode: string
-// ) => {
-//   return await supabaseServerRole.auth.admin.createUser({
-//     email,
-//     password,
-//     user_metadata: { invitationCode },
-//   })
-// }
+export const insertUserDefaultValues = async(
+  supabaseServerClient: any,
+  userId: string,
+  defaultValues: FetchedDefaultValuesType
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .insert({ userId, ...defaultValues })
+}
+
+export const updateUserDefaultValues = async (
+  supabaseServerClient: any,
+  userId: string,
+  updatedDefaultValues: FetchedDefaultValuesType
+) => {
+  return await supabaseServerClient
+    .from('defaultValues')
+    .update({ ...updatedDefaultValues })
+    .eq('userId', userId)
+}
+
+// Supabase browser client
+export const countManifestsInSupabase = async (supabaseBrowserClient: any) => {
+  return await supabaseBrowserClient
+    .from('manifests')
+    .select('manifestId', { count: 'exact' })
+}
 
 type ManifestsResponse = Awaited<
   ReturnType<typeof getManifestValuesFromSupabase>

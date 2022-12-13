@@ -7,15 +7,22 @@ import {
   Stack,
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
-import Form from '../Form'
-import EventTypeSwitcher from '../EventTypeSwitcher'
+import DashForm from '../DashForm'
+import ManifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
+import type { DefaultValuesType } from '../../helper/types'
 
-const Stepper: React.FC = () => {
+type Props = {
+  userId: string
+  defaultValues: DefaultValuesType
+}
+
+const Stepper: React.FC<Props> = ({ userId, defaultValues }) => {
   const [step, setStep] = useState<number>(0)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
   )
+  const [protocalType, setProtocalType] = useState<'dash' | 'hls'>('dash')
   const [manifestId, setManifestId] = React.useState('')
   const [formSubmited, setFormSubmited] = useState(false)
   useEffect(() => {
@@ -41,7 +48,9 @@ const Stepper: React.FC = () => {
         <MantineStepper active={step} onStepClick={setStep} breakpoint="sm">
           <MantineStepper.Step label="Choose Type" description="Type of event">
             <Group position="center" sx={{ height: '400px' }}>
-              <EventTypeSwitcher
+              <ManifestTypeSwitcher
+                protocalType={protocalType}
+                setProtocalType={setProtocalType}
                 eventType={eventType}
                 setEventType={setEventType}
               />
@@ -52,13 +61,19 @@ const Stepper: React.FC = () => {
             description="Input manifest parameters"
           >
             <Group position="center">
-              <Form
-                eventType={eventType}
-                manifestId={manifestId}
-                submitRef={submitRef}
-                formSubmited={formSubmited}
-                setFormSubmited={setFormSubmited}
-              />
+              {protocalType === 'dash' ? (
+                <DashForm
+                  userId={userId}
+                  defaultValues={defaultValues}
+                  eventType={eventType}
+                  manifestId={manifestId}
+                  submitRef={submitRef}
+                  formSubmited={formSubmited}
+                  setFormSubmited={setFormSubmited}
+                />
+              ) : (
+                <div>hls</div>
+              )}
             </Group>
           </MantineStepper.Step>
           <MantineStepper.Step

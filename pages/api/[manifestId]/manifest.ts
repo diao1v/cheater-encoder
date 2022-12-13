@@ -6,10 +6,10 @@ import {
 import {
   getManifestValuesFromSupabase,
   putManifestValuesToSupabase,
-} from '../../../src/utils/superbase-database'
+} from '../../../src/utils/supabase-database'
 import { createManifestFile } from '../../../src/utils/manifest-creation'
 import { statSync, createReadStream } from 'fs'
-import { manifestValuesType } from '../../../helper/types'
+import { manifestValuesType } from '../../../src/helper/types'
 import { getCurrentTime, getUnixTime } from '../../../src/utils/time-conversion'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 

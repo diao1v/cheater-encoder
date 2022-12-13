@@ -1,4 +1,4 @@
-import { manifestValuesType } from '../../helper/types'
+import { manifestValuesType } from '../helper/types'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { convertSecToTimespan } from './time-conversion'
 import path from 'path'

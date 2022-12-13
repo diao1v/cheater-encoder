@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { userLogout } from '../../../src/utils/superbase-database'
+import { userLogout } from '../../../src/utils/supabase-database'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

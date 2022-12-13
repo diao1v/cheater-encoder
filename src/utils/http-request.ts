@@ -3,7 +3,8 @@ import {
   manifestValuesType,
   SignupValuesType,
   LoginValuesType,
-} from '../../helper/types'
+  FetchedDefaultValuesType,
+} from '../helper/types'
 
 export const manifestCreationPoster = (manifestBody: manifestValuesType) => {
   return axios.post('/api/create-manifest', manifestBody)
@@ -34,4 +35,14 @@ export const userSignupPoster = (signupValues: SignupValuesType) => {
 
 export const userLogoutPoster = () => {
   return axios.post('/api/account/logout')
+}
+
+export const defaultValuesGetter = () => {
+  return axios.get('/api/default-values')
+}
+
+export const defaultValuesPoster = (
+  defaultValues: FetchedDefaultValuesType
+) => {
+  return axios.post('/api/default-values', defaultValues)
 }

@@ -39,6 +39,7 @@ export default function App({
         theme={{
           /** Put your mantine theme override here */
           colorScheme: 'light',
+          headings: { fontFamily: 'Greycliff CF, sans-serif' },
         }}
       >
         <SessionContextProvider
@@ -70,4 +71,3 @@ export default function App({
     </QueryClientProvider>
   )
 }
-
