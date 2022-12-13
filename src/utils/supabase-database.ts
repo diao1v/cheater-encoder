@@ -29,7 +29,7 @@ export const putManifestValuesToSupabase = async (
 ) => {
   return await supabaseServerClient
     .from('manifests')
-    .update(manifestValues)
+    .update({...manifestValues})
     .eq('manifestId', manifestId)
 }
 

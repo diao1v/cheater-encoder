@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { patchManifestValuesInCache } from '../../../src/utils/cache'
+import {
+  patchManifestValuesInCache,
+  putManifestValuesToCache,
+} from '../../../src/utils/cache'
 import {
   putManifestValuesToSupabase,
   patchManifestValueToSupabase,
@@ -34,6 +37,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // update the manifest as a whole
   if (req.method === 'PUT') {
+    const updatedManifestValues = req.body
+
+    let { error } = await putManifestValuesToSupabase(supabaseServerClient, {
+      manifestId: manifestId as string,
+      manifestValues: updatedManifestValues,
+    })
+
+    if (error) {
+      return res.status(500).json({ error: error.message })
+    }
+
+    putManifestValuesToCache(manifestId as string, updatedManifestValues)
+    res.status(200).json({ message: 'Manifest updated' })
   }
 
   // update single manifest value

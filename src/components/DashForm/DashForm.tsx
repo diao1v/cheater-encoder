@@ -50,9 +50,22 @@ const DashForm: React.FC<Props> = ({
     isSuccess: saveManifestValuesToDatabaseSuccess,
   } = useMutation(manifestCreationPoster, {
     onSuccess: (data) => {
+      updateNotification({
+        id: 'create-manifest',
+        type: 'success',
+        title: 'Manifest Created!',
+        message: 'Manifest created successfully!',
+      })
       console.log(data)
     },
     onError: (error) => {
+      updateNotification({
+        id: 'create-manifest',
+        type: 'error',
+        title: 'Error',
+        message:
+          'Something went wrong. Could not create the manifest. Please refresh the page and try again later.',
+      })
       console.log(error)
     },
   })
@@ -66,19 +79,19 @@ const DashForm: React.FC<Props> = ({
     onSuccess: (data) => {
       console.log(data)
       updateNotification({
-        id: 'create-manifest',
+        id: 'update-manifest',
         type: 'success',
-        title: 'Manifest Created!',
-        message: 'Manifest created successfully!',
+        title: 'Manifest Updated!',
+        message: 'Manifest updated successfully!',
       })
     },
     onError: (error) => {
       updateNotification({
-        id: 'create-manifest',
+        id: 'update-manifest',
         type: 'error',
         title: 'Error',
         message:
-          'Something went wrong. Could not create manifest.'
+          'Something went wrong. Could not update the manifest.'
       })
       console.log(error)
     },
@@ -111,9 +124,9 @@ const DashForm: React.FC<Props> = ({
       // update the stored manifest values
       updateManifestValuesToDatabase(manifestValues)
       showNotification({
-        id: 'create-manifest',
+        id: 'update-manifest',
         type: 'loading',
-        title: 'Create Manifest',
+        title: 'Update Manifest',
         message: 'Updating manifest. Please wait...',
       })
       return
