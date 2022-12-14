@@ -10,14 +10,14 @@ import { v4 as uuidv4 } from 'uuid'
 import DashForm from '../DashForm'
 import ManifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
-import type { DefaultValuesType } from '../../helper/types'
+import type { formValuesType } from '../../helper/types'
 
 type Props = {
   userId: string
-  defaultValues: DefaultValuesType
+  defaultFormValues: formValuesType
 }
 
-const Stepper: React.FC<Props> = ({ userId, defaultValues }) => {
+const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
   const [step, setStep] = useState<number>(0)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
@@ -64,7 +64,7 @@ const Stepper: React.FC<Props> = ({ userId, defaultValues }) => {
               {protocalType === 'dash' ? (
                 <DashForm
                   userId={userId}
-                  defaultValues={defaultValues}
+                  defaultFormValues={defaultFormValues}
                   eventType={eventType}
                   manifestId={manifestId}
                   submitRef={submitRef}

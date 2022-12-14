@@ -1,5 +1,5 @@
 import React from 'react'
-import { FetchedDefaultValuesType } from '../../helper/types'
+import { formValuesType } from '../../helper/types'
 import { useForm, UseFormReturnType } from '@mantine/form'
 import {
   TextInput,
@@ -22,7 +22,7 @@ import { IconInfoCircle } from '@tabler/icons'
 
 type Props = {
   userId: string
-  defaultValues: FetchedDefaultValuesType
+  defaultValues: formValuesType
 }
 
 const DefaultValuesForm: React.FC<Props> = ({ userId, defaultValues }) => {
@@ -60,7 +60,7 @@ const DefaultValuesForm: React.FC<Props> = ({ userId, defaultValues }) => {
     validate: {},
   })
 
-  const formSubmissionHandler = (values: FetchedDefaultValuesType) => {
+  const formSubmissionHandler = (values: formValuesType) => {
     updateDefaultValuesToDatabase(values)
     showNotification({
       id: 'update-default-values',

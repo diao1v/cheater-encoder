@@ -1,14 +1,14 @@
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
-import type { FetchedDefaultValuesType } from '../src/helper/types'
+import type { formValuesType } from '../src/helper/types'
 import { getUserDefaultValues } from '../src/utils/supabase-database'
 import DefaultValuesForm from '../src/components/DefaultValuesForm'
-import { getInitialUserDefaultValues } from '../src/helper/default-values'
+import { getInitialFormValues } from '../src/helper/default-values'
 import { Text, Stack, Title } from '@mantine/core'
 
 type PageProps = {
   user: User
-  defaultValues: FetchedDefaultValuesType
+  defaultValues: formValuesType
   error?: string
 }
 
@@ -81,7 +81,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {
         initialSession: session,
         user: session.user,
-        defaultValues: getInitialUserDefaultValues(),
+        defaultValues: getInitialFormValues(),
       },
     }
   }
