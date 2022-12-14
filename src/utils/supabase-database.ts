@@ -1,4 +1,4 @@
-import { manifestValuesType, FetchedDefaultValuesType } from '../helper/types'
+import { manifestValuesType, formValuesType } from '../helper/types'
 
 export const addManifestValuesToSupabse = async (
   supabaseServerClient: any,
@@ -105,7 +105,7 @@ export const getUserDefaultValues = async (
 export const insertUserDefaultValues = async(
   supabaseServerClient: any,
   userId: string,
-  defaultValues: FetchedDefaultValuesType
+  defaultValues: formValuesType
 ) => {
   return await supabaseServerClient
     .from('defaultValues')
@@ -115,7 +115,7 @@ export const insertUserDefaultValues = async(
 export const updateUserDefaultValues = async (
   supabaseServerClient: any,
   userId: string,
-  updatedDefaultValues: FetchedDefaultValuesType
+  updatedDefaultValues: formValuesType
 ) => {
   return await supabaseServerClient
     .from('defaultValues')

@@ -15,18 +15,17 @@ import {
   Select,
 } from '@mantine/core'
 import { IconInfoCircle } from '@tabler/icons'
-import { formValuesType, manifestValuesType } from '../../helper/types'
 import {
   manifestCreationPoster,
   manifestUpdatePutor,
 } from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
-import type { DefaultValuesType } from '../../helper/types'
+import type { manifestValuesType, formValuesType } from '../../helper/types'
 import { showNotification, updateNotification } from '../../utils/notifications'
 
 type Props = {
   userId: string
-  defaultValues: DefaultValuesType
+  defaultFormValues: formValuesType
   eventType: 'live' | 'vod' | 'live-to-vod'
   manifestId: string
   submitRef: React.MutableRefObject<any>
@@ -34,9 +33,11 @@ type Props = {
   setFormSubmited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+let submittedFormValues: formValuesType
+
 const DashForm: React.FC<Props> = ({
   userId,
-  defaultValues,
+  defaultFormValues,
   eventType,
   manifestId,
   submitRef,
@@ -90,23 +91,28 @@ const DashForm: React.FC<Props> = ({
         id: 'update-manifest',
         type: 'error',
         title: 'Error',
-        message:
-          'Something went wrong. Could not update the manifest.'
+        message: 'Something went wrong. Could not update the manifest.',
       })
       console.log(error)
     },
   })
 
-  const defaultManifestValues = defaultValues
+  const formValues = submittedFormValues ?? defaultFormValues
 
   const formSubmissionHandler = (formValues: formValuesType) => {
+    submittedFormValues = formValues
+
     const manifestValues: manifestValuesType = {
       userId,
       manifestId,
       eventType,
       manifestType: eventType === 'vod' ? 'static' : 'dynamic',
-      ...defaultManifestValues,
       ...formValues,
+      availabilityStartTime: '',
+      mediaPresentationDuration: 0,
+      segmentTimelineRepeat: 0,
+      playStarted: false,
+      liveToVod: false,
     }
 
     if (formSubmited === false) {
@@ -135,7 +141,7 @@ const DashForm: React.FC<Props> = ({
 
   const form = useForm({
     initialValues: {
-      ...defaultManifestValues,
+      ...formValues,
     },
 
     validate: {},
