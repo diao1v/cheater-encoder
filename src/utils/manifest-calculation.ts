@@ -1,5 +1,5 @@
 import { manifestValuesType } from '../helper/types'
-import { getUnixTime } from './time-conversion'
+import { getUnixTime } from '../helper/time-conversion'
 
 // need to calculate the following values:
 // startNumber: changed after start move out of DVR window
