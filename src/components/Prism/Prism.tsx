@@ -30,8 +30,7 @@ const Prism: React.FC<Props> = ({ eventType, manifestId }) => {
   }
 
   if (eventType === 'vod') {
-    manifestValues.mediaPresentationDuration =
-      manifestValues.periodDuration
+    manifestValues.mediaPresentationDuration = manifestValues.periodDuration
     manifestValues.segmentTimelineRepeat =
       Math.floor(
         manifestValues.periodDuration /

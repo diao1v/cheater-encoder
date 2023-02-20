@@ -5,7 +5,7 @@ import {
   Group,
   Box,
   Stack,
-  SimpleGrid
+  SimpleGrid,
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
 import DashForm from '@components/DashForm'
@@ -45,7 +45,9 @@ const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
     setStep((current) => (current > 0 ? current - 1 : current))
 
   return (
-    <Box sx={{ width: '90%', height: '100%', margin: 'auto', marginY: '2rem' }}>
+    <Box
+      sx={{ width: '100%', height: '100%', margin: 'auto', marginY: '4rem' }}
+    >
       <Stack justify="space-between" sx={{ height: '100%' }}>
         <MantineStepper active={step} onStepClick={setStep} breakpoint="sm">
           <MantineStepper.Step label="Choose Type" description="Type of event">
@@ -62,11 +64,11 @@ const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
             label="Generate Manifest"
             description="Input manifest parameters"
           >
-    <SimpleGrid
-      cols={2}
-      spacing="sm"
-      breakpoints={[{ maxWidth: 600, cols: 1, spacing: 'sm' }]}
-    >
+            <SimpleGrid
+              cols={2}
+              spacing="sm"
+              breakpoints={[{ maxWidth: 600, cols: 1, spacing: 'sm' }]}
+            >
               <Prism eventType={eventType} manifestId={manifestId} />
               {protocalType === 'dash' ? (
                 <DashForm

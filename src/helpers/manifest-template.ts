@@ -36,8 +36,8 @@ export const createDefaultLiveManifestContent = (
   <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011
     http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" 
-    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" type="${manifestType}" 
-    availabilityStartTime="${availabilityStartTime}" 
+    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264"
+    type="${manifestType}" availabilityStartTime="${availabilityStartTime}" 
     publishTime="${currentTime}" minimumUpdatePeriod="PT${minimumUpdatePeriodToFormate}" 
     minBufferTime="PT${miniBufferTimeToFormate}" timeShiftBufferDepth="PT${timeShiftBufferDepthToFormate}" 
     suggestedPresentationDelay="PT${suggestedPresentationDelayToFormate}">
