@@ -5,12 +5,14 @@ import {
   Group,
   Box,
   Stack,
+  SimpleGrid
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
-import DashForm from '../DashForm'
+import DashForm from '@components/DashForm'
 import ManifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
-import type { formValuesType } from '../../helper/types'
+import type { formValuesType } from '@helpers/types'
+import Prism from '@components/Prism'
 
 type Props = {
   userId: string
@@ -18,7 +20,7 @@ type Props = {
 }
 
 const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
-  const [step, setStep] = useState<number>(0)
+  const [step, setStep] = useState<number>(1)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
   )
@@ -60,7 +62,12 @@ const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
             label="Generate Manifest"
             description="Input manifest parameters"
           >
-            <Group position="center">
+    <SimpleGrid
+      cols={2}
+      spacing="sm"
+      breakpoints={[{ maxWidth: 600, cols: 1, spacing: 'sm' }]}
+    >
+              <Prism eventType={eventType} manifestId={manifestId} />
               {protocalType === 'dash' ? (
                 <DashForm
                   userId={userId}
@@ -74,7 +81,7 @@ const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
               ) : (
                 <div>hls</div>
               )}
-            </Group>
+            </SimpleGrid>
           </MantineStepper.Step>
           <MantineStepper.Step
             label="Generate Manifest"

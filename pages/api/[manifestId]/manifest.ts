@@ -9,11 +9,11 @@ import {
 } from '../../../src/utils/supabase-database'
 import { createManifestFile } from '../../../src/utils/manifest-creation'
 import { statSync, createReadStream } from 'fs'
-import { manifestValuesType } from '../../../src/helper/types'
+import { manifestValuesType } from '../../../src/helpers/types'
 import {
   getCurrentTime,
   getUnixTime,
-} from '../../../src/helper/time-conversion'
+} from '../../../src/helpers/time-conversion'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

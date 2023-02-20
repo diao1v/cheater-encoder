@@ -1,5 +1,5 @@
 import React from 'react'
-import { formValuesType } from '../../helper/types'
+import { formValuesType } from '../../helpers/types'
 import { useForm, UseFormReturnType } from '@mantine/form'
 import {
   TextInput,

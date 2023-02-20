@@ -1,9 +1,9 @@
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
-import type { formValuesType } from '../src/helper/types'
+import type { formValuesType } from '../src/helpers/types'
 import { getUserDefaultValues } from '../src/utils/supabase-database'
 import DefaultValuesForm from '../src/components/DefaultValuesForm'
-import { getInitialFormValues } from '../src/helper/default-values'
+import { getInitialFormValues } from '../src/helpers/default-values'
 import { Text, Stack, Title } from '@mantine/core'
 
 type PageProps = {

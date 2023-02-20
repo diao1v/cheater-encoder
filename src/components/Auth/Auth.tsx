@@ -17,7 +17,7 @@ import {
   userLoginPoster,
   userLogoutPoster,
 } from '../../utils/http-request'
-import { SignupValuesType, LoginValuesType } from '../../helper/types'
+import { SignupValuesType, LoginValuesType } from '../../helpers/types'
 import { showNotification, updateNotification } from '../../utils/notifications'
 import { AxiosError } from 'axios'
 import { closeAllModals } from '@mantine/modals'
@@ -47,7 +47,8 @@ const Auth: React.FC<Props> = ({ type }) => {
         type: 'success',
         title: 'Signup success',
         autoClose: 5000,
-        message: 'You have successfully signed up. Please check you inbox to confirm the email address',
+        message:
+          'You have successfully signed up. Please check you inbox to confirm the email address',
       })
       closeAllModals()
     },

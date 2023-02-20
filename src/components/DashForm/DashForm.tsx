@@ -13,14 +13,17 @@ import {
   Stack,
   Text,
   Select,
+  Grid,
 } from '@mantine/core'
+import { Prism } from '@mantine/prism'
 import { IconInfoCircle } from '@tabler/icons'
 import {
   manifestCreationPoster,
   manifestUpdatePutor,
 } from '../../utils/http-request'
 import { useMutation } from '@tanstack/react-query'
-import type { manifestValuesType, formValuesType } from '../../helper/types'
+import type { manifestValuesType, formValuesType } from '../../helpers/types'
+import { useFormStore } from '../../store/form-store'
 import { showNotification, updateNotification } from '../../utils/notifications'
 
 type Props = {
@@ -147,133 +150,141 @@ const DashForm: React.FC<Props> = ({
     validate: {},
   })
 
+  useEffect(() => {
+    useFormStore.setState({
+      formValues: form.values,
+    })
+  }, [form.values])
+
   return (
-    <Paper shadow="xs" radius="xs" p="md" sx={{ width: '90%', margin: 'auto' }}>
-      <form onSubmit={form.onSubmit((values) => formSubmissionHandler(values))}>
-        <DashFormSection title={'Required Section'}>
-          <Stack spacing={10}>
-            <TextInput
-              withAsterisk
-              label="Base URL"
-              placeholder="Where the manifest locates"
-              {...form.getInputProps('baseURL')}
-            />
-            <SimpleGrid
-              cols={3}
-              breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
-            >
+      <Paper shadow="xs" radius="xs" p="md">
+        <form
+          onSubmit={form.onSubmit((values) => formSubmissionHandler(values))}
+        >
+          <DashFormSection title={'Required Section'}>
+            <Stack spacing={10}>
               <TextInput
-                label={
-                  <Tooltip
-                    multiline
-                    width={300}
-                    position="top-start"
-                    label="The base name for the video segments. Eg, for a series file AAA_1_video_1.mp4 ... AAA_1_video_30.mp4, the base name is AAA_1_video"
-                  >
-                    <Group spacing={2}>
-                      File Base Name
-                      <IconInfoCircle size={14} />
-                    </Group>
-                  </Tooltip>
-                }
-                {...form.getInputProps('fileBaseName')}
+                withAsterisk
+                label="Base URL"
+                placeholder="Where the manifest locates"
+                {...form.getInputProps('baseURL')}
               />
-              {eventType !== 'vod' && (
+              <SimpleGrid
+                cols={3}
+                breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
+              >
+                <TextInput
+                  label={
+                    <Tooltip
+                      multiline
+                      width={300}
+                      position="top-start"
+                      label="The base name for the video segments. Eg, for a series file AAA_1_video_1.mp4 ... AAA_1_video_30.mp4, the base name is AAA_1_video"
+                    >
+                      <Group spacing={2}>
+                        File Base Name
+                        <IconInfoCircle size={14} />
+                      </Group>
+                    </Tooltip>
+                  }
+                  {...form.getInputProps('fileBaseName')}
+                />
+                {eventType !== 'vod' && (
+                  <NumberInput
+                    withAsterisk
+                    label="Live Duration (sec)"
+                    {...form.getInputProps('liveDuration')}
+                  />
+                )}
+                {eventType !== 'vod' && (
+                  <NumberInput
+                    withAsterisk
+                    label="Manifest Update Time (sec)"
+                    {...form.getInputProps('minimumUpdatePeriod')}
+                  />
+                )}
                 <NumberInput
                   withAsterisk
-                  label="Live Duration (sec)"
-                  {...form.getInputProps('liveDuration')}
+                  precision={2}
+                  label="Buffer Time (sec)"
+                  {...form.getInputProps('minBufferTime')}
                 />
-              )}
-              {eventType !== 'vod' && (
+                {eventType !== 'vod' && (
+                  <NumberInput
+                    withAsterisk
+                    label="DVR Window (sec)"
+                    {...form.getInputProps('timeShiftBufferDepth')}
+                  />
+                )}
+                {eventType !== 'vod' && (
+                  <NumberInput
+                    withAsterisk
+                    label="Presentation Delay (sec)"
+                    {...form.getInputProps('suggestedPresentationDelay')}
+                  />
+                )}
+                {eventType === 'vod' && (
+                  <NumberInput
+                    withAsterisk
+                    label="Period Duration"
+                    {...form.getInputProps('periodDuration')}
+                  />
+                )}
                 <NumberInput
                   withAsterisk
-                  label="Manifest Update Time (sec)"
-                  {...form.getInputProps('minimumUpdatePeriod')}
+                  label="Timescale"
+                  {...form.getInputProps('timescale')}
                 />
-              )}
-              <NumberInput
-                withAsterisk
-                precision={2}
-                label="Buffer Time (sec)"
-                {...form.getInputProps('minBufferTime')}
-              />
-              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
-                  label="DVR Window (sec)"
-                  {...form.getInputProps('timeShiftBufferDepth')}
+                  label="Presentation Time Offset"
+                  {...form.getInputProps('segmentPresentationTimeOffset')}
                 />
-              )}
-              {eventType !== 'vod' && (
                 <NumberInput
                   withAsterisk
-                  label="Presentation Delay (sec)"
-                  {...form.getInputProps('suggestedPresentationDelay')}
+                  label="Segment Start Number"
+                  {...form.getInputProps('segmentStartNumber')}
                 />
-              )}
-              {eventType === 'vod' && (
                 <NumberInput
                   withAsterisk
-                  label="Period Duration"
-                  {...form.getInputProps('periodDuration')}
+                  label="First Segment Time (sec)"
+                  {...form.getInputProps('segmentStartTime')}
                 />
-              )}
-              <NumberInput
-                withAsterisk
-                label="Timescale"
-                {...form.getInputProps('timescale')}
-              />
-              <NumberInput
-                withAsterisk
-                label="Presentation Time Offset"
-                {...form.getInputProps('segmentPresentationTimeOffset')}
-              />
-              <NumberInput
-                withAsterisk
-                label="Segment Start Number"
-                {...form.getInputProps('segmentStartNumber')}
-              />
-              <NumberInput
-                withAsterisk
-                label="First Segment Time (sec)"
-                {...form.getInputProps('segmentStartTime')}
-              />
-              <NumberInput
-                withAsterisk
-                label="Segment Duration"
-                {...form.getInputProps('segmentDuration')}
-              />
-            </SimpleGrid>
-          </Stack>
-        </DashFormSection>
-        {eventType === 'live-to-vod' && (
-          <DashFormSection title={'Optional Section'}>
-            <SimpleGrid
-              cols={3}
-              breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
-            >
-              <Select
-                label={
-                  <Tooltip
-                    multiline
-                    width={300}
-                    position="top-start"
-                    label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
-                  >
-                    <Group spacing={2}>
-                      PTO change after L2VOD
-                      <IconInfoCircle size={17} />
-                    </Group>
-                  </Tooltip>
-                }
-                data={[
-                  { value: false, label: 'Keep the PTO' },
-                  { value: true, label: 'Change the PTO' },
-                ]}
-                {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
-              />
-              {/* <NumberInput
+                <NumberInput
+                  withAsterisk
+                  label="Segment Duration"
+                  {...form.getInputProps('segmentDuration')}
+                />
+              </SimpleGrid>
+            </Stack>
+          </DashFormSection>
+          {eventType === 'live-to-vod' && (
+            <DashFormSection title={'Optional Section'}>
+              <SimpleGrid
+                cols={3}
+                breakpoints={[{ maxWidth: 'md', cols: 2, spacing: 'sm' }]}
+              >
+                <Select
+                  label={
+                    <Tooltip
+                      multiline
+                      width={300}
+                      position="top-start"
+                      label="This gives Period a different PTO after the Live to VoD conversion. During live, PTO is the value set above. After conversion, the PTO will adjust to equal the first segment time.(make sure the first segment is algin to the Period start)"
+                    >
+                      <Group spacing={2}>
+                        PTO change after L2VOD
+                        <IconInfoCircle size={17} />
+                      </Group>
+                    </Tooltip>
+                  }
+                  data={[
+                    { value: false, label: 'Keep the PTO' },
+                    { value: true, label: 'Change the PTO' },
+                  ]}
+                  {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
+                />
+                {/* <NumberInput
                 label={
                   <Tooltip
                     multiline
@@ -290,32 +301,32 @@ const DashForm: React.FC<Props> = ({
                 {...form.getInputProps('segmentPresentationTimeOffsetDiff')}
               /> */}
 
-              <NumberInput
-                label={
-                  <Tooltip
-                    multiline
-                    width={300}
-                    position="top-start"
-                    label="This gives Period a start time after the Live to VoD conversion. The default of Period start time for Live and VoD is always 0"
-                  >
-                    <Group spacing={2}>
-                      VoD Period Start (sec)
-                      <IconInfoCircle size={17} />
-                    </Group>
-                  </Tooltip>
-                }
-                {...form.getInputProps('vodPeriodStart')}
-              />
-            </SimpleGrid>
-          </DashFormSection>
-        )}
-        <Group position="right" mt="md">
-          <Button ref={submitRef} type="submit" style={{ display: 'none' }}>
-            Submit
-          </Button>
-        </Group>
-      </form>
-    </Paper>
+                <NumberInput
+                  label={
+                    <Tooltip
+                      multiline
+                      width={300}
+                      position="top-start"
+                      label="This gives Period a start time after the Live to VoD conversion. The default of Period start time for Live and VoD is always 0"
+                    >
+                      <Group spacing={2}>
+                        VoD Period Start (sec)
+                        <IconInfoCircle size={17} />
+                      </Group>
+                    </Tooltip>
+                  }
+                  {...form.getInputProps('vodPeriodStart')}
+                />
+              </SimpleGrid>
+            </DashFormSection>
+          )}
+          <Group position="right" mt="md">
+            <Button ref={submitRef} type="submit" style={{ display: 'none' }}>
+              Submit
+            </Button>
+          </Group>
+        </form>
+      </Paper>
   )
 }
 

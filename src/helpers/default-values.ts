@@ -1,4 +1,4 @@
-import type { formValuesType } from '../helper/types'
+import type { formValuesType } from './types'
 
 const defaultFormValues: formValuesType = {
   baseURL: '',

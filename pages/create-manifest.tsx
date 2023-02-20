@@ -2,8 +2,8 @@ import Stepper from '../src/components/Stepper'
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
 import { getUserDefaultValues } from '../src/utils/supabase-database'
-import type { formValuesType } from '../src/helper/types'
-import { getInitialFormValues } from '../src/helper/default-values'
+import type { formValuesType } from '../src/helpers/types'
+import { getInitialFormValues } from '../src/helpers/default-values'
 
 type PageProps = {
   user: User
@@ -51,7 +51,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       initialSession: session,
       user: session.user,
-      defaultFormValues
+      defaultFormValues,
     },
   }
 }

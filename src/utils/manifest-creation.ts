@@ -1,10 +1,12 @@
-import { manifestValuesType } from '../helper/types'
+import { manifestValuesType } from '../helpers/types'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
-import { createDefaultLiveManifestContent, createDefaultVodManifestContent } from '../helper/manifest-template'
+import {
+  createDefaultLiveManifestContent,
+  createDefaultVodManifestContent,
+} from '../helpers/manifest-template'
 import path from 'path'
 import { putManifestValuesToCache } from './cache'
 import { calculateNewManifestValues } from './manifest-calculation'
-
 
 export const createManifestFile = (
   manifestValues: manifestValuesType,

@@ -4,7 +4,7 @@ import {
   SignupValuesType,
   LoginValuesType,
   formValuesType,
-} from '../helper/types'
+} from '../helpers/types'
 
 export const manifestCreationPoster = (manifestBody: manifestValuesType) => {
   return axios.post('/api/create-manifest', manifestBody)
@@ -41,8 +41,6 @@ export const defaultValuesGetter = () => {
   return axios.get('/api/default-values')
 }
 
-export const defaultValuesPoster = (
-  defaultValues: formValuesType
-) => {
+export const defaultValuesPoster = (defaultValues: formValuesType) => {
   return axios.post('/api/default-values', defaultValues)
 }
