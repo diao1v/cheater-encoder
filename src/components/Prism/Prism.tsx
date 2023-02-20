@@ -21,7 +21,7 @@ const Prism: React.FC<Props> = ({ eventType, manifestId }) => {
     eventType,
     manifestType: eventType === 'vod' ? 'static' : 'dynamic',
     availabilityStartTime:
-      'This is a time your player call the manifest the first time',
+      'This is the time your player call the manifest the first time',
     mediaPresentationDuration: 0,
     segmentTimelineRepeat: 0,
     playStarted: false,
@@ -30,6 +30,8 @@ const Prism: React.FC<Props> = ({ eventType, manifestId }) => {
   }
 
   if (eventType === 'vod') {
+    manifestValues.mediaPresentationDuration =
+      manifestValues.periodDuration
     manifestValues.segmentTimelineRepeat =
       Math.floor(
         manifestValues.periodDuration /
@@ -37,17 +39,17 @@ const Prism: React.FC<Props> = ({ eventType, manifestId }) => {
       ) - 1
   }
 
-  const currentTimeValueInTemplate = '2021-05-01T00:00:00.000Z'
+  const exampleCurrentTimeValueInTemplate = '2021-05-01T00:00:00.000Z'
 
   const manifestContent =
     eventType === 'vod'
       ? createDefaultVodManifestContent(
           manifestValues,
-          currentTimeValueInTemplate
+          exampleCurrentTimeValueInTemplate
         )
       : createDefaultLiveManifestContent(
           manifestValues,
-          currentTimeValueInTemplate
+          exampleCurrentTimeValueInTemplate
         )
 
   return (

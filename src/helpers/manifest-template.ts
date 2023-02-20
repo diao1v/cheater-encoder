@@ -33,11 +33,18 @@ export const createDefaultLiveManifestContent = (
   const minimumUpdatePeriodToFormate = convertSecToTimespan(minimumUpdatePeriod)
 
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>
-  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" type="${manifestType}" availabilityStartTime="${availabilityStartTime}" publishTime="${currentTime}" minimumUpdatePeriod="PT${minimumUpdatePeriodToFormate}" minBufferTime="PT${miniBufferTimeToFormate}" timeShiftBufferDepth="PT${timeShiftBufferDepthToFormate}" suggestedPresentationDelay="PT${suggestedPresentationDelayToFormate}">
+  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011
+    http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" 
+    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" type="${manifestType}" 
+    availabilityStartTime="${availabilityStartTime}" 
+    publishTime="${currentTime}" minimumUpdatePeriod="PT${minimumUpdatePeriodToFormate}" 
+    minBufferTime="PT${miniBufferTimeToFormate}" timeShiftBufferDepth="PT${timeShiftBufferDepthToFormate}" 
+    suggestedPresentationDelay="PT${suggestedPresentationDelayToFormate}">
     <BaseURL>${baseURL}</BaseURL>
     <Period id="1" start="PT0S" bitstreamSwitching="true">
       <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
-         <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
+        <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
           <SegmentTemplate timescale="${timescale}" presentationTimeOffset="${segmentPresentationTimeOffset}" startNumber="${segmentStartNumber}" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
             <SegmentTimeline>
               <S t="${segmentStartTime}" d="${segmentDuration}" r="${segmentTimelineRepeat}"></S>
@@ -71,8 +78,10 @@ export const createDefaultVodManifestContent = (
     manifestType,
     periodDuration,
     vodPeriodStart,
+    mediaPresentationDuration
   } = manifestValues
 
+  const mediaPresentationDurationToFormate = convertSecToTimespan(mediaPresentationDuration)
   const perdiodDurationToFormate = convertSecToTimespan(periodDuration)
   const miniBufferTimeToFormate = convertSecToTimespan(minBufferTime)
   const vodPeriodStartToFormate = convertSecToTimespan(vodPeriodStart)
@@ -83,11 +92,15 @@ export const createDefaultVodManifestContent = (
       : segmentPresentationTimeOffset
 
   const manifest = `<?xml version="1.0" encoding="UTF-8"?>
-  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264" minBufferTime="PT${miniBufferTimeToFormate}" type="${manifestType}" mediaPresentationDuration="PT${perdiodDurationToFormate}" publishTime="${currentTime}" >
-     <BaseURL>${baseURL}</BaseURL>
+  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" 
+    xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="${manifestId}" 
+    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264"
+    minBufferTime="PT${miniBufferTimeToFormate}" type="${manifestType}" mediaPresentationDuration="PT${mediaPresentationDurationToFormate}" publishTime="${currentTime}" >
+    <BaseURL>${baseURL}</BaseURL>
     <Period id="1" start="PT${vodPeriodStartToFormate}" duration="PT${perdiodDurationToFormate}" bitstreamSwitching="true">
       <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
-         <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
+        <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="${fileBaseName}" bandwidth="1485978">
           <SegmentTemplate timescale="${timescale}" presentationTimeOffset="${adjustedSegmentPresentationTimeOffset}" startNumber="${segmentStartNumber}" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
             <SegmentTimeline>
               <S t="${segmentStartTime}" d="${segmentDuration}" r="${segmentTimelineRepeat}"></S>

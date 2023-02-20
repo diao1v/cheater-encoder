@@ -18,6 +18,10 @@ export const calculateNewManifestValues = (
     manifestValues.eventType === 'vod' &&
     manifestValues.segmentTimelineRepeat === 0
   ) {
+    // mediaPresentationDuration equals to all persion duration total
+    calculatedManifestValues.mediaPresentationDuration =
+      manifestValues.periodDuration
+    
     calculatedManifestValues.segmentTimelineRepeat =
       Math.floor(
         manifestValues.periodDuration /
@@ -90,8 +94,7 @@ export const calculateNewManifestValues = (
         calculatedManifestValues.timescale) *
       (calculatedManifestValues.segmentTimelineRepeat + 1)
 
-    calculatedManifestValues.mediaPresentationDuration =
-      segmentsLengthinDVRWindow
+    calculatedManifestValues.mediaPresentationDuration = segmentsLengthinDVRWindow
     calculatedManifestValues.periodDuration = segmentsLengthinDVRWindow
   }
 
