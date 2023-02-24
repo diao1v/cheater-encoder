@@ -20,13 +20,13 @@ type Props = {
 }
 
 const Stepper: React.FC<Props> = ({ userId, defaultFormValues }) => {
-  const [step, setStep] = useState<number>(1)
+  const [step, setStep] = useState<number>(0)
   const [eventType, setEventType] = useState<'live' | 'vod' | 'live-to-vod'>(
     'live-to-vod'
   )
   const [protocalType, setProtocalType] = useState<'dash' | 'hls'>('dash')
-  const [manifestId, setManifestId] = React.useState('')
-  const [formSubmited, setFormSubmited] = useState(false)
+  const [manifestId, setManifestId] = useState<string>('')
+  const [formSubmited, setFormSubmited] = useState<boolean>(false)
   useEffect(() => {
     if (typeof window !== 'undefined' && !manifestId) {
       setManifestId(uuidv4())
