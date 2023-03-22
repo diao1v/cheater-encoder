@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   showNotification as mantineShowNotification,
   updateNotification as mantineUpdateNotification,

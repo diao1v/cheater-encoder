@@ -8,11 +8,11 @@ import {
   SimpleGrid,
 } from '@mantine/core'
 import { v4 as uuidv4 } from 'uuid'
-import DashForm from '@components/DashForm'
+import DashForm from '../DashForm/'
 import ManifestTypeSwitcher from '../ManifestTypeSwitcher'
 import ManifestLinkDisplay from '../ManifestLinkDisplay'
-import type { formValuesType } from '@helpers/types'
-import Prism from '@components/Prism'
+import type { formValuesType } from '../../helpers/types'
+import Prism from '../Prism'
 
 type Props = {
   userId: string

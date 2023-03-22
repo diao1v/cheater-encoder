@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import '../styles/globals.css'
 import '../styles/preflight.css'
 import { AppProps } from 'next/app'
@@ -10,7 +11,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ModalsProvider } from '@mantine/modals'
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
-import { useState } from 'react'
 import { NextPage } from 'next'
 
 const queryClient = new QueryClient()

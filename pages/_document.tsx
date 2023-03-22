@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+import React from 'react'
 import { createGetInitialProps } from '@mantine/next'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 

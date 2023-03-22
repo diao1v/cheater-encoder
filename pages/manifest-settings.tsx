@@ -1,3 +1,4 @@
+import React from "react";
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
 import type { formValuesType } from '../src/helpers/types'

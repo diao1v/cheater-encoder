@@ -29,7 +29,7 @@ export const createManifestFile = (
       : createDefaultLiveManifestContent(calculatedManifestValues, currentTime)
 
   const dir = path.join(process.cwd(), 'tmp', manifestValues.manifestId)
-  let filePath = null
+  let filePath: string | null = null
 
   try {
     if (!existsSync(dir)) {

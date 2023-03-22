@@ -1,3 +1,4 @@
+import React from 'react'
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Box, Title, Stack, Text } from '@mantine/core'

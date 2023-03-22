@@ -1,3 +1,4 @@
+import React from "react";
 import Stepper from '../src/components/Stepper'
 import { GetServerSidePropsContext } from 'next'
 import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'

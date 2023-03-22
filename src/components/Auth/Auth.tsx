@@ -41,7 +41,6 @@ const Auth: React.FC<Props> = ({ type }) => {
     isLoading: signupLoading,
   } = useMutation(userSignupPoster, {
     onSuccess: (data) => {
-      console.log(data)
       showNotification({
         id: 'signup',
         type: 'success',
@@ -102,7 +101,6 @@ const Auth: React.FC<Props> = ({ type }) => {
   }
 
   const loginFormSubmissionHandler = (values: LoginValuesType) => {
-    console.log(values)
     login(values)
   }
 
