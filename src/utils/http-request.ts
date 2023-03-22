@@ -12,7 +12,7 @@ export const manifestCreationPoster = (manifestBody: manifestValuesType) => {
 
 export const manifestUpdatePutor = (manifestBody: manifestValuesType) => {
   const manifestId = manifestBody.manifestId
-  return axios.put(`api/${manifestId}/update-manifest`, manifestBody)
+  return axios.put(`/api/${manifestId}/update-manifest`, manifestBody)
 }
 
 export const manifestLiveToVodPatcher = ({
@@ -22,7 +22,7 @@ export const manifestLiveToVodPatcher = ({
   manifestId: string
   liveToVod: boolean
 }) => {
-  return axios.patch(`api/${manifestId}/update-manifest`, { liveToVod })
+  return axios.patch(`/api/${manifestId}/update-manifest`, { liveToVod })
 }
 
 export const userLoginPoster = (loginValues: LoginValuesType) => {

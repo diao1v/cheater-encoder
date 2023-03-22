@@ -21,12 +21,14 @@ export const calculateNewManifestValues = (
     // mediaPresentationDuration equals to all persion duration total
     calculatedManifestValues.mediaPresentationDuration =
       manifestValues.periodDuration
-    
+
     calculatedManifestValues.segmentTimelineRepeat =
       Math.floor(
         manifestValues.periodDuration /
           (manifestValues.segmentDuration / manifestValues.timescale)
       ) - 1
+
+    return calculatedManifestValues
   }
 
   const currentTimeUnix = getUnixTime(currentTime)
@@ -35,6 +37,7 @@ export const calculateNewManifestValues = (
 
   // return the raw values if the Live event just started
   if (manifestValues.eventType !== 'vod' && currentLiveLength === 0) {
+    return calculatedManifestValues
   }
 
   // calculate the new values for Live
@@ -81,6 +84,8 @@ export const calculateNewManifestValues = (
     calculatedManifestValues.segmentStartTime = updatedSegmentStartTime
     calculatedManifestValues.segmentTimelineRepeat =
       updatedSegmentTimelineRepeat
+
+    return calculatedManifestValues
   }
 
   // calculate the new values for Live to VoD conversion
@@ -89,16 +94,28 @@ export const calculateNewManifestValues = (
     manifestValues.liveToVod === true
   ) {
     calculatedManifestValues.manifestType = 'static'
-    const segmentsLengthinDVRWindow =
-      (calculatedManifestValues.segmentDuration /
-        calculatedManifestValues.timescale) *
-      (calculatedManifestValues.segmentTimelineRepeat + 1)
 
-    calculatedManifestValues.mediaPresentationDuration = segmentsLengthinDVRWindow
+    /*
+    originally we thought the VoD length after Live-to-VoD conversion is 
+    the same as the DVR window length. However, Linda from Warner found that
+    the VoD length after Live-to-VoD conversion is the same as the Live length
+    */
+
+    // const segmentsLengthinDVRWindow =
+    //   (calculatedManifestValues.segmentDuration /
+    //     calculatedManifestValues.timescale) *
+    //   (calculatedManifestValues.segmentTimelineRepeat + 1)
+
+    const segmentsLengthinDVRWindow = currentLiveLength
+
+    calculatedManifestValues.mediaPresentationDuration =
+      segmentsLengthinDVRWindow
+
+    // Because we only have 1 period for now, so the period duration is the same as the VoD length
     calculatedManifestValues.periodDuration = segmentsLengthinDVRWindow
+
+    return calculatedManifestValues
   }
 
-  return {
-    ...calculatedManifestValues,
-  }
+  return calculatedManifestValues
 }

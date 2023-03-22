@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`manifest-template createDefaultLiveManifestContent creates live manifest content correctly 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011
+    http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="manifestId" 
+    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264"
+    type="dynamic" availabilityStartTime="2023-01-02T00:00:00.000Z" 
+    publishTime="2023-01-02T00:03:00.000Z" minimumUpdatePeriod="PT0H0M16.00000S" 
+    minBufferTime="PT0H0M10.00000S" timeShiftBufferDepth="PT0H10M0.00000S" 
+    suggestedPresentationDelay="PT0H0M10.00000S">
+    <BaseURL>https://baseURL</BaseURL>
+    <Period id="1" start="PT0S" bitstreamSwitching="true">
+      <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
+        <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="videoSegment" bandwidth="1485978">
+          <SegmentTemplate timescale="24000" presentationTimeOffset="0" startNumber="1" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
+            <SegmentTimeline>
+              <S t="1" d="2" r="10"></S>
+            </SegmentTimeline>
+          </SegmentTemplate>
+        </Representation>
+      </AdaptationSet>
+    </Period>
+  </MPD>"
+`;
+
+exports[`manifest-template createDefaultVodManifestContent creates vod manifest content correctly 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+  <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" 
+    xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="manifestId" 
+    profiles="urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264"
+    minBufferTime="PT0H0M10.00000S" type="static" mediaPresentationDuration="PT1H40M0.00000S" publishTime="2023-01-02T00:03:00.000Z" >
+    <BaseURL>https://baseURL</BaseURL>
+    <Period id="1" start="PT0H0M0.00000S" duration="PT1H40M0.00000S" bitstreamSwitching="true">
+      <AdaptationSet mimeType="video/mp4" segmentAlignment="true">
+        <Representation width="1280" height="720" frameRate="2400/100" codecs="avc1.4d401f" id="videoSegment" bandwidth="1485978">
+          <SegmentTemplate timescale="24000" presentationTimeOffset="0" startNumber="1" media="$RepresentationID$_$Number$.mp4" initialization="$RepresentationID$_init.mp4">
+            <SegmentTimeline>
+              <S t="1" d="2" r="10"></S>
+            </SegmentTimeline>
+          </SegmentTemplate>
+        </Representation>
+      </AdaptationSet>
+    </Period>
+  </MPD>"
+`;
