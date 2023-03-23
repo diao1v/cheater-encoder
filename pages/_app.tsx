@@ -11,7 +11,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ModalsProvider } from '@mantine/modals'
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
-import { NextPage } from 'next'
 
 const queryClient = new QueryClient()
 
@@ -26,7 +25,7 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
-        <title>Chater Encoder</title>
+        <title>Cheater Encoder</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
