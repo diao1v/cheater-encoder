@@ -1,34 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cheater Encoder
 
-## Getting Started
+The **Cheater Encoder** is a tool designed to help video developers test streaming players by generating mock manifests. Normally, setting up a test stream with specific requirements (e.g., fallover time, video behavior debugging) requires significant effort and coordination with encoder teams. This project empowers video developers to upload video segments to a desired CDN and generate manifests to simulate live, VoD, and Live-to-VoD scenarios. Developers have full control over manifest parameters such as buffer time, DVR window, presentation delay, timescale, presentation time offset, segment start number, and more.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Supabase Authentication**:
+   - Sign up (with invitation code) and sign in.
+2. **Manifest Generation**:
+   - Default manifest values for quick setup.
+   - DASH format manifest.
+   - Live stream format manifest.
+   - VoD format manifest.
+   - Live-to-VoD format manifest with real-time switching option.
+3. **Full Control Over Manifest Parameters**:
+   - Buffer time, DVR window, presentation delay, timescale, presentation time offset, segment start number, etc.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+---
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Technologies Used
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
+- **Frontend Framework**: Next.js (Page Router)
+- **UI Library**: Mantine Component Library
+- **Styling**: TailwindCSS
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Install dependencies:
+   ```bash
+   yarn install
+   ```
+   2.Set up environment variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Create a `.env.local` file in the root directory.
+- Add the following environment variables:
 
-## Deploy on Vercel
+  ```env
+  SUPABASE_URL=
+  SUPABASE_DATABASE_PASSWORD=
+  SUPABASE_ANON_KEY=
+  SUPABASE_SERVER_ROLE_KEY=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  NEXT_PUBLIC_SUPABASE_URL=
+  NEXT_PUBLIC_SUPABASE_ANON_KEY=
+  NEXT_PUBLIC_SITE_URL=http://localhost:3000
+  ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Run the development server:
+   ```bash
+   yarn dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Usage
+
+### Sign Up and Sign In
+
+- Use an invitation code to sign up (you could preset the invitation code in supabase database).
+- Sign in with your credentials to access the dashboard.
+
+### Generate Manifests
+
+1. Upload video segments to your desired CDN(eg. ASW S3).
+2. Configure manifest parameters (e.g., buffer time, DVR window, presentation delay).
+3. Select the desired manifest format:
+   - **Live Stream**
+   - **VoD**
+   - **Live-to-VoD** (with real-time switching option).
+4. Generate and download the manifest.
+5. Copy the manifest URL and test it in your streaming player.
